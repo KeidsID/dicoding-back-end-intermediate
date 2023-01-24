@@ -1,4 +1,5 @@
 const AlbumsService = require('./services/AlbumsService');
+const AlbumsValidator = require('./validators/albums');
 const albumsPlugin = require('./api/albums');
 const configuredServer = require('./configuredServer');
 
@@ -11,6 +12,7 @@ const runServer = async () => {
     plugin: albumsPlugin,
     options: {
       service: albumsService,
+      validator: AlbumsValidator,
     },
   });
 

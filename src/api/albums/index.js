@@ -1,9 +1,11 @@
 const AlbumsHandler = require('./handler');
 const routes = require('./routes');
 
-// For JSDoc purpose
+// For VsCode-JSDoc purpose
 // eslint-disable-next-line no-unused-vars
 const AlbumsService = require('../../services/AlbumsService');
+// eslint-disable-next-line no-unused-vars
+const AlbumsValidator = require('../../validators/albums');
 
 module.exports = {
   name: 'albums',
@@ -12,9 +14,10 @@ module.exports = {
    * @param {object} server - The Hapi Server.
    * @param {object} options - The options for this plugin.
    * @param {AlbumsService} options.service
+   * @param {AlbumsValidator} options.validator
    */
-  register: async (server, {service}) => {
-    const handler = new AlbumsHandler(service);
+  register: async (server, {service, validator}) => {
+    const handler = new AlbumsHandler(service, validator);
 
     server.route(routes(handler));
   },

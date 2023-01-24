@@ -1,7 +1,8 @@
-
 // For VsCode-JSDoc purpose.
 // eslint-disable-next-line no-unused-vars
 const AlbumsService = require('../../services/AlbumsService');
+// eslint-disable-next-line no-unused-vars
+const AlbumsValidator = require('../../validators/albums');
 
 /**
  * Handler for Albums endpoints request.
@@ -10,10 +11,12 @@ class AlbumsHandler {
   /**
    * Handler for Albums endpoints request.
    *
-   * @param {AlbumsService} service - An instance of AlbumsService
+   * @param {AlbumsService} service - An instance of AlbumsService.
+   * @param {AlbumsValidator} validator - An instance of AlbumsValidator.
    */
-  constructor(service) {
+  constructor(service, validator) {
     this._service = service;
+    this._validator = validator;
   }
 
   /**
@@ -26,6 +29,8 @@ class AlbumsHandler {
    * @return {object} The response object.
    */
   postAlbum(req, h) {
+    this._validator.validatePayload(req.payload);
+
     const {name, year} = req.payload;
     const albumId = this._service.addAlbum({name, year});
 
@@ -71,6 +76,8 @@ class AlbumsHandler {
    * @return {object} The response object.
    */
   putAlbumById(req) {
+    this._validator.validatePayload(req.payload);
+
     const {id} = req.params;
     const {name, year} = req.payload;
     this._service.editAlbumById(id, {name, year});

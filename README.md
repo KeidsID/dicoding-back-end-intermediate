@@ -11,17 +11,69 @@ The task is to make an API for Music App.
 
 # TO DO
 
-## Mandatory task:
+## Mandatory Task
 
-- [ ] Albums endpoint.
+- [x] Albums endpoint.
 - [ ] Songs endpoint.
 - [ ] Data validation.
 - [ ] Error handling.
 - [ ] Using Database.
 
-## Optional task:
+## Optional Task
 
 - [ ] "albums/{id}" endpoint response array of Song on Album too.
 - [ ] Query params for songs endpoint.
 
 # TO DO Details
+
+## Albums Endpoint
+
+![albums-structure](readme-assets/struktur-api-album.png)
+
+Album obj structure:
+
+```json
+{
+  "id": "album-<unique-id-here>",
+  "name": "lorem ipsum",
+  "year": 2012
+}
+```
+
+## Songs Endpoint
+
+![songs-structure](readme-assets/struktur-api-song.png)
+
+Song obj structures:
+
+- Main structure.
+
+```json
+{
+  "id": "song-<unique-id-here>",
+  "title": "Lorem Ipsum",
+  "year": 2008,
+  "performer": "John Doe",
+  "genre": "Indie",
+  "duration": 120,
+  "albumId": "album-id"
+}
+```
+
+- Only for GET /songs endpoint.
+
+```json
+{
+  "id": "song-<unique-id-here>",
+  "title": "Life in Technicolor",
+  "performer": "Coldplay"
+}
+```
+
+## Data Validation
+
+## Error Handling
+
+## Using Database
+
+## Query Params for Songs Endpoint

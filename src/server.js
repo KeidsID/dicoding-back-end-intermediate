@@ -1,4 +1,4 @@
-const AlbumsService = require('./services/AlbumsService');
+const {AlbumsService} = require('./services/AlbumsService');
 const AlbumsValidator = require('./validators/albums');
 const albumsPlugin = require('./api/albums');
 const configuredServer = require('./configuredServer');

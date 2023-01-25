@@ -17,7 +17,7 @@ The task is to make an API for Music App.
 - [ ] Songs endpoint.
 - [ ] Data validation. -- albums done
 - [ ] Error handling. -- albums done
-- [ ] Using Database.
+- [ ] Using Database. -- albums done
 
 ## Optional Task
 

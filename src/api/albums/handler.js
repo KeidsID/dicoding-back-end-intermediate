@@ -1,6 +1,6 @@
 // For VsCode-JSDoc purpose.
 // eslint-disable-next-line no-unused-vars
-const AlbumsService = require('../../services/AlbumsService');
+const {AlbumsService} = require('../../services/AlbumsService');
 // eslint-disable-next-line no-unused-vars
 const AlbumsValidator = require('../../validators/albums');
 
@@ -26,13 +26,13 @@ class AlbumsHandler {
    * @param {object} h - The Hapi response toolkit.
    *
    * @throws {InvariantError} The type of Error that may be thrown
-   * @return {object} The response object.
+   * @return {Promise<object>} The response object.
    */
-  postAlbum(req, h) {
+  async postAlbum(req, h) {
     this._validator.validatePayload(req.payload);
 
     const {name, year} = req.payload;
-    const albumId = this._service.addAlbum({name, year});
+    const albumId = await this._service.addAlbum({name, year});
 
     const response = h.response({
       status: 'success',
@@ -51,12 +51,12 @@ class AlbumsHandler {
    * @param {object} req - The Hapi request object.
    *
    * @throws {NotFoundError} The type of Error that may be thrown
-   * @return {object} The response object.
+   * @return {Promise<object>} The response object.
    */
-  getAlbumById(req) {
+  async getAlbumById(req) {
     const {id} = req.params;
 
-    const album = this._service.getAlbumById(id);
+    const album = await this._service.getAlbumById(id);
 
     return {
       status: 'success',
@@ -73,14 +73,14 @@ class AlbumsHandler {
    * @param {object} h - The Hapi response toolkit.
    *
    * @throws {NotFoundError} The type of Error that may be thrown
-   * @return {object} The response object.
+   * @return {Promise<object>} The response object.
    */
-  putAlbumById(req) {
+  async putAlbumById(req) {
     this._validator.validatePayload(req.payload);
 
     const {id} = req.params;
     const {name, year} = req.payload;
-    this._service.editAlbumById(id, {name, year});
+    await this._service.editAlbumById(id, {name, year});
 
 
     return {
@@ -95,12 +95,12 @@ class AlbumsHandler {
    * @param {object} req - The Hapi request object.
    *
    * @throws {NotFoundError} The type of Error that may be thrown
-   * @return {object} The response object.
+   * @return {Promise<object>} The response object.
    */
-  deleteAlbumById(req) {
+  async deleteAlbumById(req) {
     const {id} = req.params;
 
-    this._service.deleteAlbumById(id);
+    await this._service.deleteAlbumById(id);
 
     return {
       status: 'success',

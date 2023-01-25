@@ -17,8 +17,6 @@ class AlbumsService {
     this._pool = new Pool();
   }
 
-  static albumsTable = 'albums';
-
   /**
    * Create and add Album object to database.
    *

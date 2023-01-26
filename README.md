@@ -11,22 +11,24 @@ The task is to make an API for Music App.
 
 # TO DO
 
-## Mandatory Task
+## Mandatory Tasks
 
 - [x] Albums endpoint.
-- [ ] Songs endpoint.
-- [ ] Data validation. -- albums done
-- [ ] Error handling. -- albums done
-- [ ] Using Database. -- albums done
+- [x] Songs endpoint.
+- [x] Data validation.
+- [x] Error handling.
+- [x] Using Database.
 
-## Optional Task
+## Optional Tasks
 
 - [ ] "/albums/{id}" endpoint response array of Song on Album too.
 - [ ] Query params for songs endpoint.
 
 # TO DO Details
 
-## Albums Endpoint
+## Mandatory Tasks
+
+### 1. Albums Endpoint
 
 ![albums-structure](readme-assets/struktur-api-album.png)
 
@@ -40,9 +42,11 @@ Album obj structure:
 }
 ```
 
-## Songs Endpoint
+### 2. Songs Endpoint
 
 ![songs-structure](readme-assets/struktur-api-song.png)
+
+<p align="center">*?: Can be <b>null</b> or <b>undefined</b>.</p>
 
 Song obj structures:
 
@@ -70,7 +74,7 @@ Song obj structures:
 }
 ```
 
-## Data Validation
+### 3. Data Validation
 
 - POST /albums
 
@@ -99,7 +103,7 @@ Song obj structures:
   - **duration**: number.
   - **albumId**: string.
 
-## Error Handling
+### 4. Error Handling
 
 - Validation Error Response:
   - status code: **400 (Bad Request)**
@@ -129,13 +133,15 @@ Song obj structures:
     }
     ```
 
-## Using Database
+### 5. Using Database
 
 - Use PostgreSQL to store data. So the data will not be lost if the server is down.
 
 - Use [dotenv](https://www.npmjs.com/package/dotenv) to manage environment variables that store credentials for accessing database.
 
-## "/albums/{id}" endpoint response array of Song on Album too
+## Optional Tasks
+
+### 1. "/albums/{id}" endpoint response array of Song on Album too
 
 Example:
 
@@ -159,7 +165,7 @@ Example:
 }
 ```
 
-## Query Params for Songs Endpoint
+### 2. Query Params for Songs Endpoint
 
 Make the **GET /songs** support query params for searching.
 

@@ -3,6 +3,7 @@ const {Pool} = require('pg');
 
 const InvariantError = require('../../common/errors/InvariantError');
 const NotFoundError = require('../../common/errors/NotFoundError');
+const {SONGS_TABLE} = require('../services/SongsService');
 
 const ALBUMS_TABLE = 'albums';
 
@@ -62,7 +63,19 @@ class AlbumsService {
       throw new NotFoundError('Album not found');
     }
 
-    return qResult.rows[0];
+    const songsQuery = {
+      text: `
+        SELECT id, title, performer 
+        FROM ${SONGS_TABLE} WHERE album_id = $1
+      `,
+      values: [id],
+    };
+    const songsQResult = await this._pool.query(songsQuery);
+
+    const albumDetail = qResult.rows[0];
+    albumDetail['songs'] = songsQResult.rows;
+
+    return albumDetail;
   }
 
   /**

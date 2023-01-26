@@ -31,22 +31,14 @@ class SongsHandler {
   async postSong(req, h) {
     this._validator.validatePayload(req.payload);
 
-    const {
-      title, year, genre,
-      performer, duration, albumId,
-    } = req.payload;
-
-    const songId = await this._service.addSong({
-      title, year, genre,
-      performer, duration, albumId,
-    });
-
+    const songId = await this._service.addSong(req.payload);
     const response = h.response({
       status: 'success',
       data: {
         songId: songId,
       },
     });
+
     response.code(201);
 
     return response;
@@ -60,8 +52,8 @@ class SongsHandler {
    * @throws {NotFoundError} The type of Error that may be thrown
    * @return {Promise<object[]>} The response object.
    */
-  async getSongs() {
-    const songs = await this._service.getSongs();
+  async getSongs(req) {
+    const songs = await this._service.getSongs(req.query);
 
     return {
       status: 'success',
@@ -81,7 +73,6 @@ class SongsHandler {
    */
   async getSongById(req) {
     const {id} = req.params;
-
     const song = await this._service.getSongById(id);
 
     return {
@@ -105,15 +96,8 @@ class SongsHandler {
     this._validator.validatePayload(req.payload);
 
     const {id} = req.params;
-    const {
-      title, year, genre,
-      performer, duration, albumId,
-    } = req.payload;
-    await this._service.editSongById(id, {
-      title, year, genre,
-      performer, duration, albumId,
-    });
 
+    await this._service.editSongById(id, req.payload);
 
     return {
       status: 'success',

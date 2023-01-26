@@ -64,13 +64,38 @@ class SongsService {
   /**
    * Get Array of Song object from database based on the requested id.
    *
+   * @param {object} query - Query from Client.
+   * @param {string} query.title
+   * @param {string} query.performer
+   *
    * @return {Promise<object[]>} The Song object based on Id.
    */
-  async getSongs() {
-    const qResult = await this._pool.query(`
+  async getSongs({title, performer}) {
+    const BASE_QUERY = `
       SELECT id, title, performer 
       FROM ${SONGS_TABLE}
-    `);
+    `;
+
+    if (title || performer) {
+      const filteredTitle = ((!title) ? '' : title).toLowerCase();
+      const filteredPerformer = ((!performer) ? '' : performer).toLowerCase();
+
+      const query = {
+        text: `${BASE_QUERY} WHERE LOWER(title) LIKE $1 AND 
+          LOWER(performer) LIKE $2
+        `,
+        values: [
+          `%${filteredTitle}%`,
+          `%${filteredPerformer}%`,
+        ],
+      };
+
+      const qResult = await this._pool.query(query);
+
+      return qResult.rows;
+    }
+
+    const qResult = await this._pool.query(BASE_QUERY);
 
     return qResult.rows;
   }

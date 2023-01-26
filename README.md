@@ -21,8 +21,8 @@ The task is to make an API for Music App.
 
 ## Optional Tasks
 
-- [ ] "/albums/{id}" endpoint response array of Song on Album too.
-- [ ] Query params for songs endpoint.
+- [x] "/albums/{id}" endpoint response array of Song on Album too.
+- [x] Query params for songs endpoint.
 
 # TO DO Details
 

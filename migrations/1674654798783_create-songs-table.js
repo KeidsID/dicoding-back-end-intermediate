@@ -1,4 +1,4 @@
-const {SONGS_TABLE} = require('../src/services/SongsService');
+const {SONGS_TABLE} = require('../src/server/services/SongsService');
 
 exports.up = (pgm) => {
   pgm.createTable(SONGS_TABLE, {

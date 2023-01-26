@@ -1,9 +1,9 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const InvariantError = require('../common/errors/InvariantError');
-const NotFoundError = require('../common/errors/NotFoundError');
-const {songsDbToJson} = require('../common/utils/dbToJson');
+const InvariantError = require('../../common/errors/InvariantError');
+const NotFoundError = require('../../common/errors/NotFoundError');
+const {songsDbToJson} = require('../../common/utils/dbToJson');
 
 const SONGS_TABLE = 'songs';
 

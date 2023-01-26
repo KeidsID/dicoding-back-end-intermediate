@@ -1,8 +1,8 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const InvariantError = require('../common/errors/InvariantError');
-const NotFoundError = require('../common/errors/NotFoundError');
+const InvariantError = require('../../common/errors/InvariantError');
+const NotFoundError = require('../../common/errors/NotFoundError');
 
 const ALBUMS_TABLE = 'albums';
 

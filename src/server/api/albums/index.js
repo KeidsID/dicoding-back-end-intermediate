@@ -3,7 +3,7 @@ const routes = require('./routes');
 
 // For VsCode-JSDoc purpose
 // eslint-disable-next-line no-unused-vars
-const {AlbumsService} = require('../../services/AlbumsService');
+const AlbumsService = require('../../services/AlbumsService');
 // eslint-disable-next-line no-unused-vars
 const AlbumsValidator = require('../../validators/albums');
 

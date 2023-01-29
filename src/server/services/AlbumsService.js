@@ -3,9 +3,7 @@ const {Pool} = require('pg');
 
 const InvariantError = require('../../common/errors/InvariantError');
 const NotFoundError = require('../../common/errors/NotFoundError');
-const {SONGS_TABLE} = require('../services/SongsService');
-
-const ALBUMS_TABLE = 'albums';
+const myConst = require('../../common/constants');
 
 /**
  * CRUD Service for Albums handling.
@@ -32,16 +30,16 @@ class AlbumsService {
     const id = `album-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${ALBUMS_TABLE} VALUES($1, $2, $3) RETURNING id`,
+      text: `INSERT INTO ${myConst.ALBUMS} VALUES($1, $2, $3) RETURNING id`,
       values: [id, name, year],
     };
-    const qResult = await this._pool.query(query);
+    const {rows} = await this._pool.query(query);
 
-    if (!qResult.rows[0].id) {
+    if (!rows[0].id) {
       throw new InvariantError('Failed to add album');
     }
 
-    return qResult.rows[0].id;
+    return rows[0].id;
   }
 
   /**
@@ -54,19 +52,19 @@ class AlbumsService {
    */
   async getAlbumById(id) {
     const query = {
-      text: `SELECT * FROM ${ALBUMS_TABLE} WHERE id = $1`,
+      text: `SELECT * FROM ${myConst.ALBUMS} WHERE id = $1`,
       values: [id],
     };
     const qResult = await this._pool.query(query);
 
-    if (!qResult.rows.length) {
+    if (!qResult.rowCount) {
       throw new NotFoundError('Album not found');
     }
 
     const songsQuery = {
       text: `
         SELECT id, title, performer 
-        FROM ${SONGS_TABLE} WHERE album_id = $1
+        FROM ${myConst.SONGS} WHERE album_id = $1
       `,
       values: [id],
     };
@@ -92,15 +90,14 @@ class AlbumsService {
   async editAlbumById(id, {name, year}) {
     const query = {
       text: `
-        UPDATE ${ALBUMS_TABLE} SET name = $1, year = $2
-        WHERE id = $3
-        RETURNING id
-      `.trim(),
+        UPDATE ${myConst.ALBUMS} SET name = $1, year = $2
+        WHERE id = $3 RETURNING id
+      `,
       values: [name, year, id],
     };
-    const qResult = await this._pool.query(query);
+    const {rowCount} = await this._pool.query(query);
 
-    if (!qResult.rows.length) {
+    if (!rowCount) {
       throw new NotFoundError('Failed to update album. Id not found');
     }
   }
@@ -114,15 +111,15 @@ class AlbumsService {
    */
   async deleteAlbumById(id) {
     const query = {
-      text: `DELETE FROM ${ALBUMS_TABLE} WHERE id = $1 RETURNING id`,
+      text: `DELETE FROM ${myConst.ALBUMS} WHERE id = $1 RETURNING id`,
       values: [id],
     };
-    const qResult = await this._pool.query(query);
+    const {rowCount} = await this._pool.query(query);
 
-    if (!qResult.rows.length) {
+    if (!rowCount) {
       throw new NotFoundError('Failed to delete album. Id not found');
     }
   }
 }
 
-module.exports = {AlbumsService, ALBUMS_TABLE};
+module.exports = AlbumsService;

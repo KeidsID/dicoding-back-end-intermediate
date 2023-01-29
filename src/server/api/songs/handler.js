@@ -1,6 +1,6 @@
 // For VsCode-JSDoc purpose.
 // eslint-disable-next-line no-unused-vars
-const {SongsService} = require('../../services/SongsService');
+const SongsService = require('../../services/SongsService');
 // eslint-disable-next-line no-unused-vars
 const SongsValidator = require('../../validators/songs');
 

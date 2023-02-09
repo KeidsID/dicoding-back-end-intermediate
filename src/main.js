@@ -10,25 +10,34 @@ const songsPlugin = require('./server/api/songs');
 const SongsService = require('./server/services/SongsService');
 const SongsValidator = require('./server/validators/songs');
 
+const usersPlugin = require('./server/api/users');
+const UsersService = require('./server/services/UsersService');
+const UsersValidator = require('./server/validators/users');
+
 const main = async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
+  const usersService = new UsersService();
 
   const server = configuredServer();
 
   await server.register([
     {
-      plugin: albumsPlugin,
-      options: {
+      plugin: albumsPlugin, options: {
         service: albumsService,
         validator: AlbumsValidator,
       },
     },
     {
-      plugin: songsPlugin,
-      options: {
+      plugin: songsPlugin, options: {
         service: songsService,
         validator: SongsValidator,
+      },
+    },
+    {
+      plugin: usersPlugin, options: {
+        service: usersService,
+        validator: UsersValidator,
       },
     },
   ]);

@@ -3,14 +3,13 @@ const {Pool} = require('pg');
 
 const InvariantError = require('../../common/errors/InvariantError');
 const NotFoundError = require('../../common/errors/NotFoundError');
-const myConst = require('../../common/constants');
+const {ALBUMS_STR, SONGS_STR}= require('../../common/constants');
 
 /**
- * CRUD Service for Albums handling.
+ * CRUD Service for "albums" table from Database.
  */
 class AlbumsService {
   /**
-  * CRUD Service for Albums handling.
   */
   constructor() {
     this._pool = new Pool();
@@ -19,18 +18,18 @@ class AlbumsService {
   /**
    * Create and add Album object to database.
    *
-   * @param {object} payload - Body request from Client.
+   * @param {object} payload
    * @param {string} payload.name
    * @param {number} payload.year
    *
-   * @throws {InvariantError} Type of Error that may be thrown.
-   * @return {Promise<string>} The unique Id of the new Album.
+   * @throws {InvariantError}
+   * @return {Promise<string>} Album id
    */
   async addAlbum({name, year}) {
     const id = `album-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${myConst.ALBUMS} VALUES($1, $2, $3) RETURNING id`,
+      text: `INSERT INTO ${ALBUMS_STR} VALUES($1, $2, $3) RETURNING id`,
       values: [id, name, year],
     };
     const {rows} = await this._pool.query(query);
@@ -45,14 +44,14 @@ class AlbumsService {
   /**
    * Get Album object from database based on the requested id.
    *
-   * @param {string} id - The id from endpoint.
+   * @param {string} id
    *
-   * @throws {NotFoundError} Type of Error that may be thrown.
-   * @return {Promise<object>} The Album object based on Id.
+   * @throws {NotFoundError}
+   * @return {Promise<object>} Album object
    */
   async getAlbumById(id) {
     const query = {
-      text: `SELECT * FROM ${myConst.ALBUMS} WHERE id = $1`,
+      text: `SELECT * FROM ${ALBUMS_STR} WHERE id = $1`,
       values: [id],
     };
     const qResult = await this._pool.query(query);
@@ -64,7 +63,7 @@ class AlbumsService {
     const songsQuery = {
       text: `
         SELECT id, title, performer 
-        FROM ${myConst.SONGS} WHERE album_id = $1
+        FROM ${SONGS_STR} WHERE album_id = $1
       `,
       values: [id],
     };
@@ -80,17 +79,17 @@ class AlbumsService {
    * Update Album object from database based on the requested id with
    * a new value.
    *
-   * @param {string} id - The id from endpoint.
-   * @param {object} payload - Body request from Client.
+   * @param {string} id
+   * @param {object} payload
    * @param {string} payload.name
    * @param {number} payload.year
    *
-   * @throws {NotFoundError} Type of Error that may be thrown.
+   * @throws {NotFoundError}
    */
   async editAlbumById(id, {name, year}) {
     const query = {
       text: `
-        UPDATE ${myConst.ALBUMS} SET name = $1, year = $2
+        UPDATE ${ALBUMS_STR} SET name = $1, year = $2
         WHERE id = $3 RETURNING id
       `,
       values: [name, year, id],
@@ -105,13 +104,13 @@ class AlbumsService {
   /**
    * Delete an Album object from database based on the requested id.
    *
-   * @param {string} id - The id from endpoint.
+   * @param {string} id
    *
-   * @throws {NotFoundError} Type of Error that may be thrown.
+   * @throws {NotFoundError}
    */
   async deleteAlbumById(id) {
     const query = {
-      text: `DELETE FROM ${myConst.ALBUMS} WHERE id = $1 RETURNING id`,
+      text: `DELETE FROM ${ALBUMS_STR} WHERE id = $1 RETURNING id`,
       values: [id],
     };
     const {rowCount} = await this._pool.query(query);

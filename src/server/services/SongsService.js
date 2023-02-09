@@ -38,8 +38,8 @@ class SongsService {
     const id = `song-${nanoid(16)}`;
 
     // undefined value cannot be input into the database
-    const filteredDuration = duration ? duration : null;
-    const filteredAlbumId = albumId ? albumId : null;
+    const filteredDuration = duration !== undefined ? duration : null;
+    const filteredAlbumId = albumId !== undefined ? albumId : null;
 
     const query = {
       text: `
@@ -129,8 +129,8 @@ class SongsService {
     performer, duration, albumId,
   }) {
     // undefined value cannot be input into the database
-    const filteredDuration = duration ? duration: null;
-    const filteredAlbumId = albumId ? albumId : null;
+    const filteredDuration = duration !== undefined ? duration: null;
+    const filteredAlbumId = albumId !== undefined ? albumId : null;
 
     const query = {
       text: `

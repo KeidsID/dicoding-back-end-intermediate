@@ -3,8 +3,6 @@ const Hapi = require('@hapi/hapi');
 const ClientError = require('./common/errors/ClientError');
 
 const configuredServer = () => {
-  require('dotenv').config();
-
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 const {USERS_STR} = require('../../common/constants');
+const AuthenticationError = require('../../common/errors/AuthenticationError');
 const InvariantError = require('../../common/errors/InvariantError');
 
 /**
@@ -65,6 +66,37 @@ class UsersService {
     if (rowCount) {
       throw new InvariantError('Username already in use');
     }
+  }
+
+  /**
+   * Verify user credential for auth.
+   *
+   * @param {object} payload
+   * @param {string} payload.username
+   * @param {string} payload.password
+   *
+   * @throws {AuthenticationError}
+   * @return {Promise<string>} User id
+   */
+  async verifyCredential({username, password}) {
+    const query = {
+      text: `SELECT * FROM ${USERS_STR} WHERE username = $1`,
+      values: [username],
+    };
+    const {rows} = await this._pool.query(query);
+
+    if (!rows.length) {
+      throw new AuthenticationError('Username not Found');
+    }
+
+    const {id, password: hashedPassword} = rows[0];
+    const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
+
+    if (!isPasswordMatch) {
+      throw new AuthenticationError('Wrong password');
+    }
+
+    return id;
   }
 }
 

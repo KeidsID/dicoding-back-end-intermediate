@@ -32,18 +32,18 @@ The task is to make an API for Music App.
 
 ## Mandatory Tasks
 
-- [ ] Registration and Authentication Users.
+- [x] Registration and Authentication Users.
 - [ ] Playlist endpoint.
 - [ ] Implement Foreign Key on Database Tables.
-- [ ] Data validation for new endpoints.
-- [ ] Error handling for new endpoints.
-- [ ] Keep features from API.v1.
+- [x] Data validation for new endpoints.
+- [x] Error handling for new endpoints.
+- [x] Keep features from API.v1.
 
 ## Optional Tasks
 
 - [ ] Collaborations on Playlists Feature.
 - [ ] Activities endpoint for Playlist Log History.
-- [ ] Keep optional features from API.v1.
+- [x] Keep optional features from API.v1.
 
 [TO DO API.v2 Details](#to-do-details-apiv2).
 
@@ -55,7 +55,7 @@ The task is to make an API for Music App.
 
 ![albums-structure](readme-assets/struktur-api-album.png)
 
-<p align="center">*any: Any <b>string</b> but can't <b>null</b>.</p>
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
 
 Album obj structure:
 
@@ -71,7 +71,7 @@ Album obj structure:
 
 ![songs-structure](readme-assets/struktur-api-song.png)
 
-<p align="center">*any: Any <b>string</b> but can't <b>null</b>.</p>
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
 <p align="center">*?: Can be <b>null</b> or <b>undefined</b>.</p>
 
 Song obj structures:
@@ -208,7 +208,7 @@ Make the **GET /songs** support query params for searching.
 
 ![auth-structure](readme-assets/struktur-api-auth.png)
 
-<p align="center">*any: Any <b>string</b> but can't <b>null</b>.</p>
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
 
 **Conditions**:
 
@@ -221,7 +221,7 @@ Make the **GET /songs** support query params for searching.
 
 ![playlists-structure](readme-assets/struktur-api-playlists.png)
 
-<p align="center">*any: Any <b>string</b> but can't <b>null</b>.</p>
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
 
 **Conditions**:
 
@@ -339,7 +339,7 @@ Make the **GET /songs** support query params for searching.
     ```json
     {
       "status": "fail",
-      "message": "Any"
+      "message": <Any, but not null>
     }
     ```
 - Restrict Error:
@@ -348,7 +348,7 @@ Make the **GET /songs** support query params for searching.
     ```json
     {
       "status": "fail",
-      "message": "Any"
+      "message": <Any, but not null>
     }
     ```
 

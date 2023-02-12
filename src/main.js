@@ -14,6 +14,11 @@ require('./server/services/AuthenticationsService');
 const AuthValidator = require('./server/validators/authentications');
 const tokenManager = require('./server/tokenize/TokenManager');
 
+// "playlists" endpoint envs
+const playlistsPlugin = require('./server/api/playlists');
+const PlaylistsService = require('./server/services/PlaylistsService');
+const PlaylistsValidator = require('./server/validators/playlists');
+
 // "songs" endpoint envs
 const songsPlugin = require('./server/api/songs');
 const SongsService = require('./server/services/SongsService');
@@ -27,6 +32,7 @@ const UsersValidator = require('./server/validators/users');
 const main = async () => {
   const albumsService = new AlbumsService();
   const authenticationsService = new AuthenticationsService();
+  const playlistsService = new PlaylistsService();
   const songsService = new SongsService();
   const usersService = new UsersService();
 
@@ -43,6 +49,12 @@ const main = async () => {
       plugin: authPlugin, options: {
         authenticationsService, usersService,
         tokenManager, validator: AuthValidator,
+      },
+    },
+    {
+      plugin: playlistsPlugin, options: {
+        playlistsService,
+        validator: PlaylistsValidator,
       },
     },
     {

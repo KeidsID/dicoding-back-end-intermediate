@@ -1,0 +1,35 @@
+{
+  "tabsColor.activeTab": {
+    "backgroundColor": "default",
+    "fontColor": "#fff"
+  },
+
+  "tabsColor.byDirectory": {
+    "src": {
+      "backgroundColor": "#4caf503f",
+      "fontColor": "#fff"
+    },
+
+    "src\\common": {
+      "backgroundColor": "#ab47bc3f",
+      "fontColor": "#fff"
+    },
+    "src\\common\\errors": {
+      "backgroundColor": "#ef53503f",
+      "fontColor": "#fff"
+    },
+    "src\\common\\utils": {
+      "backgroundColor": "#7cb3423f",
+      "fontColor": "#fff"
+    },
+
+    "src\\server": {
+      "backgroundColor": "#fbc02d3f",
+      "fontColor": "#fff"
+    },
+    "src\\server\\validators": {
+      "backgroundColor": "#ef53503f",
+      "fontColor": "#fff"
+    }
+  }
+}

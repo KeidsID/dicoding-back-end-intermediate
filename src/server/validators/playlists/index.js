@@ -19,6 +19,15 @@ const PlaylistsValidator = {
       throw new InvariantError(validationResult.error.message);
     }
   },
+
+  validateDeletePlaylistsSongsPayload: (payload) => {
+    const validationResult = Schemas.
+        DeletePlaylistSongsPayloadSchema.validate(payload);
+
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  },
 };
 
 module.exports = PlaylistsValidator;

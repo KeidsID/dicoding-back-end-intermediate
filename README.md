@@ -8,8 +8,8 @@ Project task from [dicoding.com Back-End Intermediate Class][class-link].
 
 Postman collections and envs for testing this project:
 
-- [Api.v1][pm-v1].
-- [Api.v2][pm-v2].
+- [API.v1 test zip][pm-v1].
+- [API.v2 test zip][pm-v2].
 
 The task is to make an API for Music App.
 

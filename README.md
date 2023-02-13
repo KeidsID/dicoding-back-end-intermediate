@@ -33,8 +33,8 @@ The task is to make an API for Music App.
 ## Mandatory Tasks
 
 - [x] Registration and Authentication Users.
-- [ ] Playlist endpoint.
-- [ ] Implement Foreign Key on Database Tables.
+- [x] Playlist endpoint.
+- [x] Implement Foreign Key on Database Tables.
 - [x] Data validation for new endpoints.
 - [x] Error handling for new endpoints.
 - [x] Keep features from API.v1.
@@ -226,8 +226,8 @@ Make the **GET /songs** support query params for searching.
 **Conditions**:
 
 - **Restrict** endpoint (Need "access token" to access).
-- **GET /playlists** only returns owned playlist based on userId from JWT token.
-- Only Owner (or Collabolator) can add, get, and delete songs to/from playlist.
+- **GET /playlists** returns owned playlists (And collab playlists if exist).
+- Collaborator (if exist) can access **songs** (add, get, and delete) from playlist, but only owners can delete their own playlists.
 - Only valid **songId** can be add/delete to/from playlist.
 
 **Responses**:

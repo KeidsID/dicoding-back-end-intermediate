@@ -59,10 +59,8 @@ class PlaylistsService {
         SELECT 
           ${PLAYLISTS_STR}.id, ${PLAYLISTS_STR}.name, 
           ${USERS_STR}.username
-        FROM ${PLAYLISTS_STR}
-
-        LEFT JOIN ${USERS_STR} ON ${PLAYLISTS_STR}.owner = ${USERS_STR}.id
-
+        FROM ${PLAYLISTS_STR} LEFT JOIN ${USERS_STR} ON 
+          ${PLAYLISTS_STR}.owner = ${USERS_STR}.id
         WHERE ${PLAYLISTS_STR}.owner = $1
       `,
       values: [owner],
@@ -70,6 +68,30 @@ class PlaylistsService {
     const {rows} = await this._pool.query(query);
 
     return rows;
+  }
+
+  /**
+   * Get playlist by id from Database.
+   *
+   * @param {string} id
+   *
+   * @return {Promise<object>} Playlists object
+   */
+  async getPlaylistById(id) {
+    const query = {
+      text: `
+        SELECT 
+          ${PLAYLISTS_STR}.id, ${PLAYLISTS_STR}.name, 
+          ${USERS_STR}.username
+        FROM ${PLAYLISTS_STR} LEFT JOIN ${USERS_STR} ON 
+          ${PLAYLISTS_STR}.owner = ${USERS_STR}.id
+        WHERE ${PLAYLISTS_STR}.id = $1
+      `,
+      values: [id],
+    };
+    const {rows} = await this._pool.query(query);
+
+    return rows[0];
   }
 
   /**

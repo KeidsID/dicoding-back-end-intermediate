@@ -4,6 +4,7 @@ const routes = require('./routes');
 
 // VsCode-JsDoc purpose
 const PlaylistsService = require('../../services/PlaylistsService');
+const PlaylistSongsService = require('../../services/PlaylistSongsService');
 const validator = require('../../validators/playlists');
 
 module.exports = {
@@ -13,13 +14,16 @@ module.exports = {
    * @param {object} server - The Hapi Server.
    * @param {object} options - The options for this plugin.
    * @param {PlaylistsService} options.playlistsService
+   * @param {PlaylistSongsService} options.playlistSongsService
    * @param {validator} options.validator
    */
   register: async (server, {
-    playlistsService, validator,
+    playlistsService, playlistSongsService,
+    validator,
   }) => {
     const handler = new PlaylistsHandler({
-      playlistsService, validator,
+      playlistsService, playlistSongsService,
+      validator,
     });
 
     server.route(routes(handler));

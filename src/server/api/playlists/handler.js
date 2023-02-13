@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
 const PlaylistsService = require('../../services/PlaylistsService');
+const PlaylistSongsService = require('../../services/PlaylistSongsService');
 const validator = require('../../validators/playlists');
 
 /**
@@ -10,12 +11,15 @@ class PlaylistsHandler {
   /**
    * @param {object} utils
    * @param {PlaylistsService} utils.playlistsService
+   * @param {PlaylistSongsService} utils.playlistSongsService
    * @param {validator} utils.validator
    */
   constructor({
-    playlistsService, validator,
+    playlistsService, playlistSongsService,
+    validator,
   }) {
-    this._playlistService = playlistsService;
+    this._playlistsService = playlistsService;
+    this._playlistSongsService = playlistSongsService;
     this._validator = validator;
   }
 
@@ -25,7 +29,7 @@ class PlaylistsHandler {
    * @param {object} req - Client Request object
    * @param {object} h - Hapi Response Toolkit
    *
-   * @return {object} Server Response
+   * @return {Promise<object>} Server Response
    */
   async postPlaylist(req, h) {
     this._validator.validatePostPlaylistPayload(req.payload);
@@ -33,7 +37,7 @@ class PlaylistsHandler {
     const {id: authId} = req.auth.credentials;
 
     const playlistId =
-      await this._playlistService.addPlaylist(authId, req.payload);
+      await this._playlistsService.addPlaylist(authId, req.payload);
 
     const response = h.response({
       status: 'success',
@@ -49,12 +53,12 @@ class PlaylistsHandler {
    *
    * @param {object} req - Client Request object
    *
-   * @return {object} Server Response
+   * @return {Promise<object>} Server Response
    */
   async getPlaylists(req) {
     const {id: authId} = req.auth.credentials;
 
-    const playlists = await this._playlistService.getPlaylists(authId);
+    const playlists = await this._playlistsService.getPlaylists(authId);
 
     return {
       status: 'success',
@@ -63,22 +67,93 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "DELETE /playlists" endpoint.
+   * Handler for "DELETE /playlists/{id}" endpoint.
    *
    * @param {object} req - Client Request object
    *
-   * @return {object} Server Response
+   * @return {Promise<object>} Server Response
    */
   async deletePlaylistById(req) {
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
 
-    await this._playlistService.verifyPlaylistOwner(id, authId);
-    await this._playlistService.deletePlaylist(id);
+    await this._playlistsService.verifyPlaylistOwner(id, authId);
+    await this._playlistsService.deletePlaylist(id);
 
     return {
       status: 'success',
       message: 'Playlist Deleted',
+    };
+  }
+
+  /**
+   * Handler for "POST /playlists/{id}/songs" endpoint.
+   *
+   * @param {object} req - Client Request object
+   * @param {object} h - Hapi Response Toolkit
+   *
+   * @return {Promise<object>} Server Response
+   */
+  async postSongToPlaylist(req, h) {
+    this._validator.validatePostPlaylistsSongsPayload(req.payload);
+
+    const {id: authId} = req.auth.credentials;
+    const {id} = req.params;
+
+    await this._playlistsService.verifyPlaylistOwner(id, authId);
+    await this._playlistSongsService.addSongToPlaylist(id, req.payload);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Song added to Playlist',
+    });
+    response.code(201);
+
+    return response;
+  }
+
+  /**
+   * Handler for "GET /playlists/{id}/songs" endpoint.
+   *
+   * @param {object} req - Client Request object
+   *
+   * @return {Promise<object>} Server Response
+   */
+  async getSongsFromPlaylists(req) {
+    const {id: authId} = req.auth.credentials;
+    const {id} = req.params;
+
+    await this._playlistsService.verifyPlaylistOwner(id, authId);
+
+    const playlist = await this._playlistsService.getPlaylistById(id);
+    playlist['songs'] =
+      await this._playlistSongsService.getSongsFromPlaylist(id);
+
+    return {
+      status: 'success',
+      data: {playlist},
+    };
+  }
+
+  /**
+   * Handler for "DELETE /playlists/{id}/songs" endpoint.
+   *
+   * @param {object} req - Client Request object
+   *
+   * @return {Promise<object>} Server Response
+   */
+  async deleteSongFromPlaylists(req) {
+    this._validator.validateDeletePlaylistsSongsPayload(req.payload);
+
+    const {id: authId} = req.auth.credentials;
+    const {id} = req.params;
+
+    await this._playlistsService.verifyPlaylistOwner(id, authId);
+    await this._playlistSongsService.deleteSongFromPlaylist(id, req.payload);
+
+    return {
+      status: 'success',
+      message: 'Song deleted from Playlist',
     };
   }
 }

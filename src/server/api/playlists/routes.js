@@ -25,6 +25,21 @@ const routes = (handler) => [
     handler: (req) => handler.deletePlaylistById(req),
     options: {auth: playlistAuthStrategy},
   },
+  {
+    method: 'POST', path: `${PATH_PLAYLISTS}/{id}/songs`,
+    handler: (req, h) => handler.postSongToPlaylist(req, h),
+    options: {auth: playlistAuthStrategy},
+  },
+  {
+    method: 'GET', path: `${PATH_PLAYLISTS}/{id}/songs`,
+    handler: (req) => handler.getSongsFromPlaylists(req),
+    options: {auth: playlistAuthStrategy},
+  },
+  {
+    method: 'DELETE', path: `${PATH_PLAYLISTS}/{id}/songs`,
+    handler: (req) => handler.deleteSongFromPlaylists(req),
+    options: {auth: playlistAuthStrategy},
+  },
 ];
 
 

@@ -1,10 +1,10 @@
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
+const {playlistAuthStrategy} = require('./common/constants');
 
-const ClientError = require('./common/errors/ClientError');
+const onPreResponseHandler = require('./onPreResponseHandler');
 
-const configuredServer = () => {
-  require('dotenv').config();
-
+const configuredServer = async () => {
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
@@ -15,35 +15,27 @@ const configuredServer = () => {
     },
   });
 
-  server.ext('onPreResponse', (req, h) => {
-    const {response} = req;
+  await server.register([
+    {plugin: Jwt},
+  ]);
 
-    if (response instanceof Error) {
-      if (response instanceof ClientError) {
-        const newResponse = h.response({
-          status: 'fail',
-          message: response.message,
-        });
-        newResponse.code(response.statusCode);
-
-        return newResponse;
-      }
-
-      if (!response.isServer) {
-        return h.continue;
-      }
-
-      const newResponse = h.response({
-        status: 'error',
-        message: 'Server fail. Sorry for the inconvenience',
-      });
-      newResponse.code(500);
-
-      return newResponse;
-    }
-
-    return h.continue;
+  server.auth.strategy(playlistAuthStrategy, 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
   });
+
+  server.ext('onPreResponse', onPreResponseHandler);
 
   return server;
 };

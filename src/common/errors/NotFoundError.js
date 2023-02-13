@@ -1,7 +1,7 @@
 const ClientError = require('./ClientError');
 
 /**
- * For 404 response.
+ * For Not Found response (404).
  */
 class NotFoundError extends ClientError {
   /**

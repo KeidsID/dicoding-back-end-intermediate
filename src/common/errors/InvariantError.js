@@ -1,7 +1,7 @@
 const ClientError = require('./ClientError');
 
 /**
- * For bad request response.
+ * For bad request (400).
  */
 class InvariantError extends ClientError {
   /**

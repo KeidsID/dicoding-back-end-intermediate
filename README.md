@@ -1,15 +1,19 @@
 [class-link]: https://www.dicoding.com/academies/271
-[pm-link]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/01-open-music-api-v1/OpenMusic%20API%20V1%20Test.zip
+[pm-v1]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/01-open-music-api-v1/OpenMusic%20API%20V1%20Test.zip
+[pm-v2]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/02-open-music-api-v2/OpenMusic%20API%20V2%20Test.zip
 
 # dicoding-back-end-intermediate
 
 Project task from [dicoding.com Back-End Intermediate Class][class-link].
 
-Postman collections and envs for testing this project: [Download here][pm-link].
+Postman collections and envs for testing this project:
+
+- [API.v1 test zip][pm-v1].
+- [API.v2 test zip][pm-v2].
 
 The task is to make an API for Music App.
 
-# TO DO
+# TO DO API.v1
 
 ## Mandatory Tasks
 
@@ -24,13 +28,34 @@ The task is to make an API for Music App.
 - [x] "/albums/{id}" endpoint response array of Song on Album too.
 - [x] Query params for songs endpoint.
 
-# TO DO Details
+# TO DO API.v2
+
+## Mandatory Tasks
+
+- [x] Registration and Authentication Users.
+- [x] Playlist endpoint.
+- [x] Implement Foreign Key on Database Tables.
+- [x] Data validation for new endpoints.
+- [x] Error handling for new endpoints.
+- [x] Keep features from API.v1.
+
+## Optional Tasks
+
+- [ ] Collaborations on Playlists Feature.
+- [ ] Activities endpoint for Playlist Log History.
+- [x] Keep optional features from API.v1.
+
+[TO DO API.v2 Details](#to-do-details-apiv2).
+
+# TO DO Details API.v1
 
 ## Mandatory Tasks
 
 ### 1. Albums Endpoint
 
 ![albums-structure](readme-assets/struktur-api-album.png)
+
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
 
 Album obj structure:
 
@@ -46,6 +71,7 @@ Album obj structure:
 
 ![songs-structure](readme-assets/struktur-api-song.png)
 
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
 <p align="center">*?: Can be <b>null</b> or <b>undefined</b>.</p>
 
 Song obj structures:
@@ -74,7 +100,7 @@ Song obj structures:
 }
 ```
 
-### 3. Data Validation
+### 3. Data Validations
 
 - POST /albums
 
@@ -173,3 +199,221 @@ Make the **GET /songs** support query params for searching.
 - **?performer**: Search song based on performer.
 
 **Note**: Both queries can be combined ( ".../songs?title=lmao&performer=pisan" )
+
+# TO DO Details API.v2
+
+## Mandatory Tasks
+
+### **1. Registration and Authentication Users**
+
+![auth-structure](readme-assets/struktur-api-auth.png)
+
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
+
+**Conditions**:
+
+- **Username** must unique.
+- Using JWT token for Auth.
+- JWT token payload contains **userId**.
+- JWT token secret key value stored on envs as **ACCESS_TOKEN_KEY** and **REFRESH_TOKEN_KEY**.
+
+### **2.Playlist endpoint**
+
+![playlists-structure](readme-assets/struktur-api-playlists.png)
+
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
+
+**Conditions**:
+
+- **Restrict** endpoint (Need "access token" to access).
+- **GET /playlists** returns owned playlists (And collab playlists if exist).
+- Collaborator (if exist) can access **songs** (add, get, and delete) from playlist, but only owners can delete their own playlists.
+- Only valid **songId** can be add/delete to/from playlist.
+
+**Responses**:
+
+- GET /playlists
+
+```json
+{
+  "status": "success",
+  "data": {
+    "playlists": [
+      {
+        "id": "playlist-Qbax5Oy7L8WKf74l",
+        "name": "Lagu Indie Hits Indonesia",
+        "username": "dicoding"
+      },
+      {
+        "id": "playlist-lmA4PkM3LseKlkmn",
+        "name": "Lagu Untuk Membaca",
+        "username": "dicoding"
+      }
+    ]
+  }
+}
+```
+
+- GET /playlists/{id}/songs
+
+```json
+{
+  "status": "success",
+  "data": {
+    "playlist": {
+      "id": "playlist-Mk8AnmCp210PwT6B",
+      "name": "My Favorite Coldplay",
+      "username": "dicoding",
+      "songs": [
+        {
+          "id": "song-Qbax5Oy7L8WKf74l",
+          "title": "Life in Technicolor",
+          "performer": "Coldplay"
+        },
+        {
+          "id": "song-poax5Oy7L8WKllqw",
+          "title": "Centimeteries of London",
+          "performer": "Coldplay"
+        },
+        {
+          "id": "song-Qalokam7L8WKf74l",
+          "title": "Lost!",
+          "performer": "Coldplay"
+        }
+      ]
+    }
+  }
+}
+```
+
+**Obj Playlist for Database**:
+
+```json
+{
+  "id": "playlist-Qbax5Oy7L8WKf74l",
+  "name": "Lagu Indie Hits Indonesia",
+  "owner": "user-Qbax5Oy7L8WKf74l"
+}
+```
+
+### **3. Implement Foreign Key**
+
+- Table **songs** related to **albums**.
+- Table **playlists** related to **users**.
+- etc.
+
+### **4. Data Validation**
+
+- POST /users
+
+  - **username**: string, required.
+  - **password**: string, required.
+  - **fullname**: string, required.
+
+- POST /authentications
+
+  - **username**: string, required.
+  - **password**: string, required.
+
+- PUT /authentications
+
+  - **refreshToken**: string, required.
+
+- DELETE /authentications
+
+  - **refreshToken**: string, required.
+
+- POST /playlists
+
+  - **name**: string, required.
+
+- POST /playlists/{playlistId}/songs
+
+  - **songId**: string, required.
+
+### **5. Error Handling**
+
+The previous error handler is still in use, but there is a new handler for Auth.
+
+- Authorization Error:
+  - status code: **401 (Unauthorized)**
+  - response body:
+    ```json
+    {
+      "status": "fail",
+      "message": <Any, but not null>
+    }
+    ```
+- Restrict Error:
+  - status code: **403 (Forbidden)**
+  - response body:
+    ```json
+    {
+      "status": "fail",
+      "message": <Any, but not null>
+    }
+    ```
+
+### **6. Keep Features from API.v1**
+
+- Albums Feature.
+- Songs Feature.
+- Validations for Songs and Albums Endpoints.
+
+## Optional Tasks
+
+### **1. Playlists Collaboration Feature**
+
+![collaborations-structure](readme-assets/struktur-api-collaborations.png)
+
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
+
+**Collaborator access rights**:
+
+- Collaborated playlists also shown on "GET /playlists" endpoint data.
+- Can add/get/delete songs to/from playlist.
+- Can see playlist activities too (If already implemented).
+
+### **2. Activities endpoint for Playlist Log History**
+
+This feature is used to record the history of adding or removing songs from playlists by users or collaborators.
+
+Endpoint: **GET /playlists/{id}/activities**
+
+Response example:
+
+- Status Code: 200
+- Body:
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "playlistId": "playlist-Mk8AnmCp210PwT6B",
+      "activities": [
+        {
+          "username": "dicoding",
+          "title": "Life in Technicolor",
+          "action": "add",
+          "time": "2021-09-13T08:06:20.600Z"
+        },
+        {
+          "username": "dicoding",
+          "title": "Centimeteries of London",
+          "action": "add",
+          "time": "2021-09-13T08:06:39.852Z"
+        },
+        {
+          "username": "dimasmds",
+          "title": "Life in Technicolor",
+          "action": "delete",
+          "time": "2021-09-13T08:07:01.483Z"
+        }
+      ]
+    }
+  }
+  ```
+
+### **3. Keep optional features from API.v1**
+
+- Songs list from album detail.
+- Query param for search songs.

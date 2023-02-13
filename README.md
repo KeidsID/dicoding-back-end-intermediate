@@ -204,7 +204,7 @@ Make the **GET /songs** support query params for searching.
 
 ## Mandatory Tasks
 
-### 1. Registration and Authentication Users
+### **1. Registration and Authentication Users**
 
 ![auth-structure](readme-assets/struktur-api-auth.png)
 
@@ -217,7 +217,7 @@ Make the **GET /songs** support query params for searching.
 - JWT token payload contains **userId**.
 - JWT token secret key value stored on envs as **ACCESS_TOKEN_KEY** and **REFRESH_TOKEN_KEY**.
 
-### 2.Playlist endpoint
+### **2.Playlist endpoint**
 
 ![playlists-structure](readme-assets/struktur-api-playlists.png)
 
@@ -296,13 +296,13 @@ Make the **GET /songs** support query params for searching.
 }
 ```
 
-### 3. Implement Foreign Key
+### **3. Implement Foreign Key**
 
 - Table **songs** related to **albums**.
 - Table **playlists** related to **users**.
 - etc.
 
-### 4. Data Validation
+### **4. Data Validation**
 
 - POST /users
 
@@ -331,7 +331,9 @@ Make the **GET /songs** support query params for searching.
 
   - **songId**: string, required.
 
-### 5. Error Handling
+### **5. Error Handling**
+
+The previous error handler is still in use, but there is a new handler for Auth.
 
 - Authorization Error:
   - status code: **401 (Unauthorized)**
@@ -352,10 +354,66 @@ Make the **GET /songs** support query params for searching.
     }
     ```
 
-### 6. Keep Features from API.v1
+### **6. Keep Features from API.v1**
 
 - Albums Feature.
 - Songs Feature.
 - Validations for Songs and Albums Endpoints.
 
 ## Optional Tasks
+
+### **1. Playlists Collaboration Feature**
+
+![collaborations-structure](readme-assets/struktur-api-collaborations.png)
+
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
+
+**Collaborator access rights**:
+
+- Collaborated playlists also shown on "GET /playlists" endpoint data.
+- Can add/get/delete songs to/from playlist.
+- Can see playlist activities too (If already implemented).
+
+### **2. Activities endpoint for Playlist Log History**
+
+This feature is used to record the history of adding or removing songs from playlists by users or collaborators.
+
+Endpoint: **GET /playlists/{id}/activities**
+
+Response example:
+
+- Status Code: 200
+- Body:
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "playlistId": "playlist-Mk8AnmCp210PwT6B",
+      "activities": [
+        {
+          "username": "dicoding",
+          "title": "Life in Technicolor",
+          "action": "add",
+          "time": "2021-09-13T08:06:20.600Z"
+        },
+        {
+          "username": "dicoding",
+          "title": "Centimeteries of London",
+          "action": "add",
+          "time": "2021-09-13T08:06:39.852Z"
+        },
+        {
+          "username": "dimasmds",
+          "title": "Life in Technicolor",
+          "action": "delete",
+          "time": "2021-09-13T08:07:01.483Z"
+        }
+      ]
+    }
+  }
+  ```
+
+### **3. Keep optional features from API.v1**
+
+- Songs list from album detail.
+- Query param for search songs.

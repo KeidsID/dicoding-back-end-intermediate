@@ -1,16 +1,13 @@
+/* eslint-disable no-unused-vars */
 // For VsCode-JSDoc purpose.
-// eslint-disable-next-line no-unused-vars
 const AlbumsService = require('../../services/AlbumsService');
-// eslint-disable-next-line no-unused-vars
 const AlbumsValidator = require('../../validators/albums');
 
 /**
- * Handler for Albums endpoints request.
+ * Handler for "/albums" endpoint.
  */
 class AlbumsHandler {
   /**
-   * Handler for Albums endpoints request.
-   *
    * @param {AlbumsService} service - An instance of AlbumsService.
    * @param {AlbumsValidator} validator - An instance of AlbumsValidator.
    */
@@ -22,11 +19,11 @@ class AlbumsHandler {
   /**
    * Create and add Album object to server.
    *
-   * @param {object} req - The Hapi request object.
-   * @param {object} h - The Hapi response toolkit.
+   * @param {object} req - The Hapi request object
+   * @param {object} h - The Hapi response toolkit
    *
-   * @throws {InvariantError} The type of Error that may be thrown
-   * @return {Promise<object>} The response object.
+   * @throws {InvariantError}
+   * @return {Promise<object>} Server Response
    */
   async postAlbum(req, h) {
     this._validator.validatePayload(req.payload);
@@ -47,10 +44,10 @@ class AlbumsHandler {
   /**
    * Get Album object from server based on the requested id.
    *
-   * @param {object} req - The Hapi request object.
+   * @param {object} req - The Hapi request object
    *
-   * @throws {NotFoundError} The type of Error that may be thrown
-   * @return {Promise<object>} The response object.
+   * @throws {NotFoundError}
+   * @return {Promise<object>} Server Response
    */
   async getAlbumById(req) {
     const {id} = req.params;
@@ -68,11 +65,11 @@ class AlbumsHandler {
   /**
    * Create and add Album object to server.
    *
-   * @param {object} req - The Hapi request object.
-   * @param {object} h - The Hapi response toolkit.
+   * @param {object} req - The Hapi request object
+   * @param {object} h - The Hapi response toolkit
    *
-   * @throws {NotFoundError} The type of Error that may be thrown
-   * @return {Promise<object>} The response object.
+   * @throws {NotFoundError}
+   * @return {Promise<object>} Server Response
    */
   async putAlbumById(req) {
     this._validator.validatePayload(req.payload);
@@ -90,10 +87,10 @@ class AlbumsHandler {
   /**
    * Create and add Album object to server.
    *
-   * @param {object} req - The Hapi request object.
+   * @param {object} req - The Hapi request object
    *
-   * @throws {NotFoundError} The type of Error that may be thrown
-   * @return {Promise<object>} The response object.
+   * @throws {NotFoundError}
+   * @return {Promise<object>} Server Response
    */
   async deleteAlbumById(req) {
     const {id} = req.params;

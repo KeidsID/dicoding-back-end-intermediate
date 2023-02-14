@@ -1,19 +1,27 @@
+/* eslint-disable no-unused-vars */
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const {PLAYLISTS_STR, USERS_STR} = require('../../common/constants');
+const {
+  PLAYLISTS_STR, USERS_STR, COLLABORATIONS_STR,
+} = require('../../common/constants');
 const AuthorizationError = require('../../common/errors/AuthorizationError');
 const InvariantError = require('../../common/errors/InvariantError');
 const NotFoundError = require('../../common/errors/NotFoundError');
+
+// VsCode-JsDoc purpose
+const CollaborationsService = require('./CollaborationsService');
 
 /**
  * CRUD Service for "playlists" table from Database.
  */
 class PlaylistsService {
   /**
+   * @param {CollaborationsService} collaborationsService
    */
-  constructor() {
+  constructor(collaborationsService) {
     this._pool = new Pool();
+    this._collaborationsService = collaborationsService;
   }
 
   /**
@@ -30,11 +38,9 @@ class PlaylistsService {
     const id = `playlist-${nanoid(16)}`;
 
     const query = {
-      text: `
-        INSERT INTO ${PLAYLISTS_STR} VALUES(
-          $1, $2, $3
-        ) RETURNING id
-      `,
+      text: `INSERT INTO ${PLAYLISTS_STR} VALUES(
+        $1, $2, $3
+      ) RETURNING id`,
       values: [id, name, owner],
     };
     const {rows} = await this._pool.query(query);
@@ -42,6 +48,10 @@ class PlaylistsService {
     if (!rows.length) {
       throw new InvariantError('Failed to add playlist');
     }
+
+    await this._collaborationsService.addCollab({
+      playlistId: id, userId: owner,
+    });
 
     return rows[0].id;
   }
@@ -59,9 +69,12 @@ class PlaylistsService {
         SELECT 
           ${PLAYLISTS_STR}.id, ${PLAYLISTS_STR}.name, 
           ${USERS_STR}.username
-        FROM ${PLAYLISTS_STR} LEFT JOIN ${USERS_STR} ON 
-          ${PLAYLISTS_STR}.owner = ${USERS_STR}.id
-        WHERE ${PLAYLISTS_STR}.owner = $1
+        FROM ${PLAYLISTS_STR} 
+        LEFT JOIN ${USERS_STR} ON ${PLAYLISTS_STR}.owner = ${USERS_STR}.id
+        LEFT JOIN ${COLLABORATIONS_STR} ON 
+          ${COLLABORATIONS_STR}.playlist_id = ${PLAYLISTS_STR}.id
+        WHERE ${PLAYLISTS_STR}.owner = $1 OR ${COLLABORATIONS_STR}.user_id = $1
+        GROUP BY ${PLAYLISTS_STR}.id, ${USERS_STR}.username
       `,
       values: [owner],
     };
@@ -75,6 +88,7 @@ class PlaylistsService {
    *
    * @param {string} id
    *
+   * @throws {NotFoundError}
    * @return {Promise<object>} Playlists object
    */
   async getPlaylistById(id) {
@@ -90,6 +104,10 @@ class PlaylistsService {
       values: [id],
     };
     const {rows} = await this._pool.query(query);
+
+    if (!rows.length) {
+      throw new NotFoundError('Playlist Not Found');
+    }
 
     return rows[0];
   }
@@ -116,7 +134,7 @@ class PlaylistsService {
   }
 
   /**
-   * Verify id with playlist owner from Database.
+   * Verify playlist owner from Database.
    *
    * @param {string} id - Playlist id
    * @param {string} userId
@@ -137,6 +155,26 @@ class PlaylistsService {
     if (rows[0].owner !== userId) {
       throw new AuthorizationError('Only owners are allowed');
     }
+  }
+
+  /**
+   * Verify collab access from Database.
+   *
+   * @param {string} id - Playlist id
+   * @param {string} userId
+   *
+   * @throws {ClientError}
+   */
+  async verifyPlaylistAccess(id, userId) {
+    try {
+      await this.verifyPlaylistOwner(id, userId);
+    } catch (e) {
+      if (!e instanceof AuthorizationError) {
+        throw e;
+      }
+    }
+
+    await this._collaborationsService.verifyCollab(id, userId);
   }
 }
 

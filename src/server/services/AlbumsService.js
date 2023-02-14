@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
@@ -5,14 +6,19 @@ const InvariantError = require('../../common/errors/InvariantError');
 const NotFoundError = require('../../common/errors/NotFoundError');
 const {ALBUMS_STR, SONGS_STR}= require('../../common/constants');
 
+// VsCode-JsDoc purpose
+const SongsService = require('./SongsService');
+
 /**
  * CRUD Service for "albums" table from Database.
  */
 class AlbumsService {
   /**
-  */
-  constructor() {
+   * @param {SongsService} songsService
+   */
+  constructor(songsService) {
     this._pool = new Pool();
+    this._songsService = songsService;
   }
 
   /**
@@ -54,23 +60,16 @@ class AlbumsService {
       text: `SELECT * FROM ${ALBUMS_STR} WHERE id = $1`,
       values: [id],
     };
-    const qResult = await this._pool.query(query);
+    const {rows} = await this._pool.query(query);
 
-    if (!qResult.rowCount) {
+    if (!rows.length) {
       throw new NotFoundError('Album not found');
     }
 
-    const songsQuery = {
-      text: `
-        SELECT id, title, performer 
-        FROM ${SONGS_STR} WHERE album_id = $1
-      `,
-      values: [id],
-    };
-    const songsQResult = await this._pool.query(songsQuery);
+    const songs = await this._songsService.getSongsByAlbumId(id);
 
-    const albumDetail = qResult.rows[0];
-    albumDetail['songs'] = songsQResult.rows;
+    const albumDetail = rows[0];
+    albumDetail['songs'] = songs;
 
     return albumDetail;
   }

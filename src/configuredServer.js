@@ -1,7 +1,7 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
-const {playlistAuthStrategy} = require('./common/constants');
 
+const {playlistAuthStrategy} = require('./common/constants');
 const onPreResponseHandler = require('./onPreResponseHandler');
 
 const configuredServer = async () => {

@@ -1,6 +1,6 @@
 {
   "name": "dicoding-back-end-intermediate",
-  "version": "2.5.0",
+  "version": "2.6.1",
   "description": "Project task from dicoding.com intermediate back-end class.",
   "main": "./src/main.js",
   "type": "commonjs",

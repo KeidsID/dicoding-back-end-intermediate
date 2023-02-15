@@ -169,7 +169,7 @@ class PlaylistsService {
     try {
       await this.verifyPlaylistOwner(id, userId);
     } catch (e) {
-      if (!e instanceof AuthorizationError) {
+      if (!(e instanceof AuthorizationError)) {
         throw e;
       }
     }

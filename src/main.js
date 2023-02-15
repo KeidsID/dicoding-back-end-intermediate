@@ -24,6 +24,8 @@ const CollaborationsValidator = require('./server/validators/collaborations');
 const playlistsPlugin = require('./server/api/playlists');
 const PlaylistsService = require('./server/services/PlaylistsService');
 const PlaylistSongsService = require('./server/services/PlaylistSongsService');
+const PlaylistSongActivitiesService = require(
+    './server/services/PlaylistSongActivitiesService');
 const PlaylistsValidator = require('./server/validators/playlists');
 
 // "songs" endpoint envs
@@ -46,6 +48,7 @@ const main = async () => {
 
   const playlistsService = new PlaylistsService(collaborationsService);
   const playlistSongsService = new PlaylistSongsService(songsService);
+  const playlistSongActivitiesService = new PlaylistSongActivitiesService();
 
   const server = await configuredServer();
 
@@ -83,6 +86,7 @@ const main = async () => {
     {
       plugin: playlistsPlugin, options: {
         playlistsService, playlistSongsService,
+        playlistSongActivitiesService,
         validator: PlaylistsValidator,
       },
     },

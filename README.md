@@ -50,7 +50,7 @@ OR
 
 Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.js**".
 
-## List of Contents
+## List of README.md Contents
 
 - [TO DO API.v1](#to-do-apiv1)
 - [TO DO API.v1 Details](#to-do-apiv1-details)
@@ -90,7 +90,7 @@ Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.j
 ## Optional Tasks
 
 - [x] Collaborations on Playlists Feature.
-- [ ] Activities endpoint for Playlist Log History.
+- [x] Activities endpoint for Playlist Log History.
 - [x] Keep optional features from API.v1.
 
 # TO DO API.v1 Details
@@ -445,7 +445,7 @@ NavBar:
 
 ### **2. Activities endpoint for Playlist Log History**
 
-This feature is used to record the history of adding or removing songs from playlists by users or collaborators.
+This feature is used to record the history of **adding and removing** **songs from playlists** by users or collaborators.
 
 Endpoint: **GET /playlists/{id}/activities**
 

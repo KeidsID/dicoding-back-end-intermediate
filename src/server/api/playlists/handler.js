@@ -2,6 +2,8 @@
 // VsCode-JsDoc purpose
 const PlaylistsService = require('../../services/PlaylistsService');
 const PlaylistSongsService = require('../../services/PlaylistSongsService');
+const PlaylistSongActivitiesService = require(
+    '../../services/PlaylistSongActivitiesService');
 const validator = require('../../validators/playlists');
 
 /**
@@ -12,14 +14,16 @@ class PlaylistsHandler {
    * @param {object} utils
    * @param {PlaylistsService} utils.playlistsService
    * @param {PlaylistSongsService} utils.playlistSongsService
+   * @param {PlaylistSongActivitiesService} utils.playlistSongActivitiesService
    * @param {validator} utils.validator
    */
   constructor({
     playlistsService, playlistSongsService,
-    validator,
+    playlistSongActivitiesService, validator,
   }) {
     this._playlistsService = playlistsService;
     this._playlistSongsService = playlistSongsService;
+    this._playlistSongActivitiesService = playlistSongActivitiesService;
     this._validator = validator;
   }
 
@@ -100,9 +104,11 @@ class PlaylistsHandler {
 
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
+    const {songId} = req.payload;
 
     await this._playlistsService.verifyPlaylistAccess(id, authId);
     await this._playlistSongsService.addSongToPlaylist(id, req.payload);
+    await this._playlistSongActivitiesService.recordAddSong(id, authId, songId);
 
     const response = h.response({
       status: 'success',
@@ -124,11 +130,11 @@ class PlaylistsHandler {
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
 
-    const playlist = await this._playlistsService.getPlaylistById(id);
-    playlist['songs'] =
-    await this._playlistSongsService.getSongsFromPlaylist(id);
-
     await this._playlistsService.verifyPlaylistAccess(id, authId);
+
+    const playlist = await this._playlistsService.getPlaylistById(id);
+    playlist['songs'] = await this._playlistSongsService
+        .getSongsFromPlaylist(id);
 
     return {
       status: 'success',
@@ -148,13 +154,42 @@ class PlaylistsHandler {
 
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
+    const {songId} = req.payload;
 
     await this._playlistsService.verifyPlaylistAccess(id, authId);
     await this._playlistSongsService.deleteSongFromPlaylist(id, req.payload);
+    await this._playlistSongActivitiesService.recordDeleteSong(
+        id, authId, songId,
+    );
 
     return {
       status: 'success',
       message: 'Song deleted from Playlist',
+    };
+  }
+
+  /**
+   * Handler for "GET /playlists/{id}/activities" endpoint.
+   *
+   * @param {object} req - Client Request object
+   *
+   * @return {Promise<object>} Server Response
+   */
+  async getPlaylistSongActivities(req) {
+    const {id: authId} = req.auth.credentials;
+    const {id} = req.params;
+
+    await this._playlistsService.verifyPlaylistAccess(id, authId);
+
+    const activities = await this._playlistSongActivitiesService
+        .getPlaylistActivities(id);
+
+    return {
+      status: 'success',
+      data: {
+        playlistId: id,
+        activities,
+      },
     };
   }
 }

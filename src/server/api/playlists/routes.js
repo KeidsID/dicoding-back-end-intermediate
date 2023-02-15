@@ -40,6 +40,11 @@ const routes = (handler) => [
     handler: (req) => handler.deleteSongFromPlaylists(req),
     options: {auth: playlistAuthStrategy},
   },
+  {
+    method: 'GET', path: `${PATH_PLAYLISTS}/{id}/activities`,
+    handler: (req) => handler.getPlaylistSongActivities(req),
+    options: {auth: playlistAuthStrategy},
+  },
 ];
 
 

@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
+
 const {USERS_STR} = require('../../common/constants');
 const AuthenticationError = require('../../common/errors/AuthenticationError');
 const InvariantError = require('../../common/errors/InvariantError');
+const NotFoundError = require('../../common/errors/NotFoundError');
 
 /**
  * CRUD Service for "users" table from Database
@@ -47,6 +49,28 @@ class UsersService {
     }
 
     return rows[0].id;
+  }
+
+  /**
+   * Get user from Database by id.
+   *
+   * @param {string} id
+   *
+   * @throws {NotFoundError} If users not found
+   * @return {Promise<object>} User object
+   */
+  async getUserById(id) {
+    const query = {
+      text: `SELECT id, username, fullname FROM ${USERS_STR} WHERE id = $1`,
+      values: [id],
+    };
+    const {rows} = await this._pool.query(query);
+
+    if (!rows.length) {
+      throw new NotFoundError('User Not Found');
+    }
+
+    return rows[0];
   }
 
   /**

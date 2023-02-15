@@ -9,7 +9,7 @@ const AlbumsValidator = require('../../validators/albums');
 
 module.exports = {
   name: 'albums',
-  version: '1.0.0',
+  version: '1.0.1',
   /**
    * @param {object} server - The Hapi Server.
    * @param {object} options - The options for this plugin.

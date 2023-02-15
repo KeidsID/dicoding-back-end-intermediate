@@ -41,10 +41,9 @@ class SongsService {
     const filteredAlbumId = albumId !== undefined ? albumId : null;
 
     const query = {
-      text: `
-        INSERT INTO ${SONGS_STR} 
-        VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id
-      `,
+      text: `INSERT INTO ${SONGS_STR} VALUES(
+        $1, $2, $3, $4, $5, $6, $7
+      ) RETURNING id`,
       values: [
         id, title, year, performer,
         genre, filteredDuration, filteredAlbumId,
@@ -52,7 +51,7 @@ class SongsService {
     };
     const {rows} = await this._pool.query(query);
 
-    if (!rows[0].id) {
+    if (!rows.length) {
       throw new InvariantError('Failed to add song');
     }
 
@@ -81,6 +80,26 @@ class SongsService {
       values: [`%${filteredTitle}%`, `%${filteredPerformer}%`],
     };
 
+    const {rows} = await this._pool.query(query);
+
+    return rows;
+  }
+
+  /**
+   * Get list of songs from Database based on Album id.
+   *
+   * @param {string} albumId
+   *
+   * @return {Promise<object[]>}
+   */
+  async getSongsByAlbumId(albumId) {
+    const query = {
+      text: `
+        SELECT id, title, performer 
+        FROM ${SONGS_STR} WHERE album_id = $1
+      `,
+      values: [albumId],
+    };
     const {rows} = await this._pool.query(query);
 
     return rows;

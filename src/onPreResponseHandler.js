@@ -3,6 +3,8 @@ const ClientError = require('./common/errors/ClientError');
 /**
  * Handler for `Hapi.Server.ext("onPreResponse")`.
  *
+ * This handler will catch Errors from any handlers.
+ *
  * @param {object} req - Request object with response from Server.routes
  * @param {object} h - Hapi Response Toolkit
  * @return {object} Server Response
@@ -12,26 +14,27 @@ const onPreResponseHandler = (req, h) => {
 
   if (response instanceof Error) {
     if (response instanceof ClientError) {
-      const newResponse = h.response({
+      const clientErrorsResponse = h.response({
         status: 'fail',
         message: response.message,
       });
-      newResponse.code(response.statusCode);
+      clientErrorsResponse.code(response.statusCode);
 
-      return newResponse;
+      return clientErrorsResponse;
     }
 
     if (!response.isServer) {
       return h.continue;
     }
 
-    const newResponse = h.response({
+    const unknownErrorsResponse = h.response({
       status: 'error',
       message: 'Server fail. Sorry for the inconvenience',
+      error: response.message,
     });
-    newResponse.code(500);
+    unknownErrorsResponse.code(500);
 
-    return newResponse;
+    return unknownErrorsResponse;
   }
 
   return h.continue;

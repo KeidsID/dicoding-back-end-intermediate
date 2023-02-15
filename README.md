@@ -6,14 +6,60 @@
 
 Project task from [dicoding.com Back-End Intermediate Class][class-link].
 
-Postman collections and envs for testing this project:
+This project is a learning outcome through the platform dicoding.com. The aim is to enable students to create a RestfulAPI rich in features, including data validations, database relations, and auth with JWT Token.
+
+### **Postman collections and envs for testing this project:**
 
 - [API.v1 test zip][pm-v1].
 - [API.v2 test zip][pm-v2].
 
-The task is to make an API for Music App.
+
+## Project Set Up
+
+- Create the "**.env**" file with the following data below:
+
+  ```perl
+  # Server Config
+  HOST=localhost
+  PORT=5000
+
+  # node-postgres Config
+  PGUSER=<your psql user>
+  PGHOST=<your psql host>
+  PGPASSWORD=<your psql password>
+  PGDATABASE=<your psql database name>
+  PGPORT=<your psql port>
+
+  # Token Config
+  ACCESS_TOKEN_KEY=<random string>
+  REFRESH_TOKEN_KEY=<random string>
+  ACCESS_TOKEN_AGE=<duration in ms>
+  ```
+
+- Then run this command
+  ```
+  npm install
+  npm run pgm up
+  ```
+
+**Note**:
+
+If you do TRUNCATE tables, make sure to re-add default album data (id: album-unknown) into "**albums**" table
+
+OR
+
+Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.js**".
+
+## List of README.md Contents
+
+- [TO DO API.v1](#to-do-apiv1)
+- [TO DO API.v1 Details](#to-do-apiv1-details)
+- [TO DO API.v2](#to-do-apiv2)
+- [TO DO API.v2 Details](#to-do-apiv2-details)
 
 # TO DO API.v1
+
+[See TO DO API.v1 Details](#to-do-apiv1-details).
 
 ## Mandatory Tasks
 
@@ -30,6 +76,8 @@ The task is to make an API for Music App.
 
 # TO DO API.v2
 
+[See TO DO API.v2 Details](#to-do-apiv2-details).
+
 ## Mandatory Tasks
 
 - [x] Registration and Authentication Users.
@@ -41,17 +89,20 @@ The task is to make an API for Music App.
 
 ## Optional Tasks
 
-- [ ] Collaborations on Playlists Feature.
-- [ ] Activities endpoint for Playlist Log History.
+- [x] Collaborations on Playlists Feature.
+- [x] Activities endpoint for Playlist Log History.
 - [x] Keep optional features from API.v1.
 
-[TO DO API.v2 Details](#to-do-details-apiv2).
+# TO DO API.v1 Details
 
-# TO DO Details API.v1
+NavBar:
+[Back to Top](#dicoding-back-end-intermediate) |
+[Optional Tasks](#optional-tasks-2) |
+[TO DO API.v2 Details](#to-do-apiv2-details)
 
 ## Mandatory Tasks
 
-### 1. Albums Endpoint
+### **1. Albums Endpoint**
 
 ![albums-structure](readme-assets/struktur-api-album.png)
 
@@ -67,7 +118,7 @@ Album obj structure:
 }
 ```
 
-### 2. Songs Endpoint
+### **2. Songs Endpoint**
 
 ![songs-structure](readme-assets/struktur-api-song.png)
 
@@ -100,7 +151,7 @@ Song obj structures:
 }
 ```
 
-### 3. Data Validations
+### **3. Data Validations**
 
 - POST /albums
 
@@ -129,7 +180,7 @@ Song obj structures:
   - **duration**: number.
   - **albumId**: string.
 
-### 4. Error Handling
+### **4. Error Handling**
 
 - Validation Error Response:
   - status code: **400 (Bad Request)**
@@ -159,7 +210,7 @@ Song obj structures:
     }
     ```
 
-### 5. Using Database
+### **5. Using Database**
 
 - Use PostgreSQL to store data. So the data will not be lost if the server is down.
 
@@ -167,7 +218,11 @@ Song obj structures:
 
 ## Optional Tasks
 
-### 1. "/albums/{id}" endpoint response array of Song on Album too
+NavBar:
+[Back to Top](#dicoding-back-end-intermediate) |
+[Back to Mandatory Tasks](#to-do-apiv1-details)
+
+### **1. "/albums/{id}" endpoint response array of Song on Album too**
 
 Example:
 
@@ -191,7 +246,7 @@ Example:
 }
 ```
 
-### 2. Query Params for Songs Endpoint
+### **2. Query Params for Songs Endpoint**
 
 Make the **GET /songs** support query params for searching.
 
@@ -200,7 +255,12 @@ Make the **GET /songs** support query params for searching.
 
 **Note**: Both queries can be combined ( ".../songs?title=lmao&performer=pisan" )
 
-# TO DO Details API.v2
+# TO DO API.v2 Details
+
+NavBar:
+[Back to Top](#dicoding-back-end-intermediate) |
+[Optional Tasks](#optional-tasks-3) |
+[TO DO API.v1 Details](#to-do-apiv1-details)
 
 ## Mandatory Tasks
 
@@ -362,11 +422,20 @@ The previous error handler is still in use, but there is a new handler for Auth.
 
 ## Optional Tasks
 
+NavBar:
+[Back to Top](#dicoding-back-end-intermediate) |
+[Back to Mandatory Tasks](#to-do-apiv2-details) |
+[TO DO API.v1 Details](#to-do-apiv1-details)
+
 ### **1. Playlists Collaboration Feature**
 
 ![collaborations-structure](readme-assets/struktur-api-collaborations.png)
 
 <p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
+
+**Conditions**:
+
+- Only the owner of the playlist can add or remove collaborators from the playlist.
 
 **Collaborator access rights**:
 
@@ -376,7 +445,7 @@ The previous error handler is still in use, but there is a new handler for Auth.
 
 ### **2. Activities endpoint for Playlist Log History**
 
-This feature is used to record the history of adding or removing songs from playlists by users or collaborators.
+This feature is used to record the history of **adding and removing** **songs from playlists** by users or collaborators.
 
 Endpoint: **GET /playlists/{id}/activities**
 

@@ -2,9 +2,9 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const {PLAYLIST_SONGS_STR, SONGS_STR} = require('../../common/constants');
-const InvariantError = require('../../common/errors/InvariantError');
-const NotFoundError = require('../../common/errors/NotFoundError');
+const DbTables = require('../../common/utils/DbTables');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const SongsService = require('./SongsService');
@@ -36,10 +36,10 @@ class PlaylistSongsService {
   async addSongToPlaylist(id, {songId}) {
     await this._songsService.verifySong(songId);
 
-    const relationId = `playlists.songs-${nanoid(16)}`;
+    const relationId = `playlistSong-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${PLAYLIST_SONGS_STR} VALUES (
+      text: `INSERT INTO ${DbTables.playlistSongs} VALUES (
         $1, $2, $3
       ) RETURNING id`,
       values: [relationId, id, songId],
@@ -61,12 +61,14 @@ class PlaylistSongsService {
   async getSongsFromPlaylist(id) {
     const query = {
       text: `
-        SELECT ${SONGS_STR}.id, ${SONGS_STR}.title, ${SONGS_STR}.performer 
-          FROM ${PLAYLIST_SONGS_STR} 
-        RIGHT JOIN  ${SONGS_STR} ON 
-          ${PLAYLIST_SONGS_STR}.song_id = ${SONGS_STR}.id
-        WHERE ${PLAYLIST_SONGS_STR}.playlist_id = $1
-        GROUP BY ${SONGS_STR}.id
+        SELECT 
+          ${DbTables.songs}.id, ${DbTables.songs}.title, 
+          ${DbTables.songs}.performer 
+        FROM ${DbTables.playlistSongs} 
+        RIGHT JOIN  ${DbTables.songs} ON 
+          ${DbTables.playlistSongs}.song_id = ${DbTables.songs}.id
+        WHERE ${DbTables.playlistSongs}.playlist_id = $1
+        GROUP BY ${DbTables.songs}.id
       `,
       values: [id],
     };
@@ -87,11 +89,9 @@ class PlaylistSongsService {
   async deleteSongFromPlaylist(id, {songId}) {
     await this._songsService.verifySong(songId);
 
-    const relationId = `playlists.songs-${nanoid(16)}`;
-
     const query = {
       text: `
-        DELETE FROM ${PLAYLIST_SONGS_STR} 
+        DELETE FROM ${DbTables.playlistSongs} 
         WHERE playlist_id = $1 AND song_id = $2 RETURNING id
       `,
       values: [id, songId],

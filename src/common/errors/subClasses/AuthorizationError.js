@@ -1,7 +1,7 @@
-const ClientError = require('./ClientError');
+const ClientError = require('../ClientError');
 
 /**
- * For restrict access (403).
+ * Error handler for Forbidden Access response (403).
  */
 class AuthorizationError extends ClientError {
   /**

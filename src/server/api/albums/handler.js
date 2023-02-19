@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
-// For VsCode-JSDoc purpose.
+// VsCode-JSDoc purpose
 const AlbumsService = require('../../services/AlbumsService');
-const AlbumsValidator = require('../../validators/albums');
+const Validator = require('../../validators/albums');
 
 /**
- * Handler for "/albums" endpoint.
+ * Request handlers for `/albums` endpoints.
  */
 class AlbumsHandler {
   /**
-   * @param {AlbumsService} service - An instance of AlbumsService.
-   * @param {AlbumsValidator} validator - An instance of AlbumsValidator.
+   * @param {AlbumsService} service
+   * @param {Validator} validator
    */
   constructor(service, validator) {
     this._service = service;
@@ -17,7 +17,7 @@ class AlbumsHandler {
   }
 
   /**
-   * Create and add Album object to server.
+   * Handler for `POST /albums` request.
    *
    * @param {object} req - The Hapi request object
    * @param {object} h - The Hapi response toolkit
@@ -32,9 +32,7 @@ class AlbumsHandler {
 
     const response = h.response({
       status: 'success',
-      data: {
-        albumId: albumId,
-      },
+      data: {albumId},
     });
     response.code(201);
 
@@ -42,7 +40,7 @@ class AlbumsHandler {
   }
 
   /**
-   * Get Album object from server based on the requested id.
+   * Handler for `GET /albums/{id}` request.
    *
    * @param {object} req - The Hapi request object
    *
@@ -56,14 +54,12 @@ class AlbumsHandler {
 
     return {
       status: 'success',
-      data: {
-        album: album,
-      },
+      data: {album},
     };
   }
 
   /**
-   * Create and add Album object to server.
+   * Handler for `PUT /albums/{id}` request.
    *
    * @param {object} req - The Hapi request object
    * @param {object} h - The Hapi response toolkit
@@ -85,7 +81,7 @@ class AlbumsHandler {
   }
 
   /**
-   * Create and add Album object to server.
+   * Handler for `DELETE /albums/{id}` request.
    *
    * @param {object} req - The Hapi request object
    *

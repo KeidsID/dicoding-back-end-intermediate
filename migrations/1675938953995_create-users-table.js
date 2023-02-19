@@ -1,9 +1,7 @@
-const {USERS_STR} = require('../src/common/constants');
-
-exports.shorthands = undefined;
+const DbTables = require('../src/common/utils/DbTables');
 
 exports.up = (pgm) => {
-  pgm.createTable(USERS_STR, {
+  pgm.createTable(DbTables.users, {
     id: {type: 'VARCHAR(50)', primaryKey: true},
     username: {type: 'VARCHAR(50)', unique: true, notNull: true},
     password: {type: 'TEXT', notNull: true},
@@ -12,5 +10,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable(USERS_STR);
+  pgm.dropTable(DbTables.users);
 };

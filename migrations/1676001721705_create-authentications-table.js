@@ -1,13 +1,11 @@
-const {AUTHENTICATIONS_STR} = require('../src/common/constants');
-
-exports.shorthands = undefined;
+const DbTables = require('../src/common/utils/DbTables');
 
 exports.up = (pgm) => {
-  pgm.createTable(AUTHENTICATIONS_STR, {
+  pgm.createTable(DbTables.authentications, {
     token: {type: 'TEXT', notNull: true},
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable(AUTHENTICATIONS_STR);
+  pgm.dropTable(DbTables.authentications);
 };

@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
 const UsersService = require('../../services/UsersService');
-const validator = require('../../validators/users');
+const Validator = require('../../validators/users');
 
 /**
- * Handlers for "/users" endpoint.
+ * Request handlers for `/users` endpoint.
  */
 class UsersHandler {
   /**
    * @param {UsersService} service
-   * @param {validator} validator
+   * @param {Validator} validator
    */
   constructor(service, validator) {
     this._service = service;
@@ -17,7 +17,7 @@ class UsersHandler {
   }
 
   /**
-   * Handler for POST method.
+   * Handler for `POST /users` request.
    *
    * @param {object} req - Client Request object
    * @param {object} h - Hapi Response Toolkit

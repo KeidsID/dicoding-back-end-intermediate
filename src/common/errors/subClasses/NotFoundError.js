@@ -1,7 +1,7 @@
-const ClientError = require('./ClientError');
+const ClientError = require('../ClientError');
 
 /**
- * For Not Found response (404).
+ * Error handler for Not Found response (404).
  */
 class NotFoundError extends ClientError {
   /**

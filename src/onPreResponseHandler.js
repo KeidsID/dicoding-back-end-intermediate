@@ -30,7 +30,10 @@ const onPreResponseHandler = (req, h) => {
     const unknownErrorsResponse = h.response({
       status: 'error',
       message: 'Server fail. Sorry for the inconvenience',
-      error: response.message,
+      error: {
+        name: response.name,
+        message: response.message,
+      },
     });
     unknownErrorsResponse.code(500);
 

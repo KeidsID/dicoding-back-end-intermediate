@@ -7,7 +7,7 @@ const PlaylistSongActivitiesService = require(
 const validator = require('../../validators/playlists');
 
 /**
- * Handlers for "/playlists" endpoint.
+ * Request handlers for `/playlists` endpoint.
  */
 class PlaylistsHandler {
   /**
@@ -28,11 +28,12 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "POST /playlists" endpoint.
+   * Handler for `POST /playlists` request.
    *
    * @param {object} req - Client Request object
    * @param {object} h - Hapi Response Toolkit
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async postPlaylist(req, h) {
@@ -54,7 +55,7 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "GET /playlists" endpoint.
+   * Handler for `GET /playlists` request.
    *
    * @param {object} req - Client Request object
    *
@@ -72,10 +73,11 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "DELETE /playlists/{id}" endpoint.
+   * Handler for `DELETE /playlists/{id}` request.
    *
    * @param {object} req - Client Request object
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async deletePlaylistById(req) {
@@ -92,11 +94,12 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "POST /playlists/{id}/songs" endpoint.
+   * Handler for `POST /playlists/{id}/songs` request.
    *
    * @param {object} req - Client Request object
    * @param {object} h - Hapi Response Toolkit
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async postSongToPlaylist(req, h) {
@@ -120,10 +123,11 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "GET /playlists/{id}/songs" endpoint.
+   * Handler for `GET /playlists/{id}/songs` request.
    *
    * @param {object} req - Client Request object
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async getSongsFromPlaylists(req) {
@@ -143,10 +147,11 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "DELETE /playlists/{id}/songs" endpoint.
+   * Handler for `DELETE /playlists/{id}/songs` request.
    *
    * @param {object} req - Client Request object
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async deleteSongFromPlaylists(req) {
@@ -169,10 +174,11 @@ class PlaylistsHandler {
   }
 
   /**
-   * Handler for "GET /playlists/{id}/activities" endpoint.
+   * Handler for `GET /playlists/{id}/activities` request.
    *
    * @param {object} req - Client Request object
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async getPlaylistSongActivities(req) {

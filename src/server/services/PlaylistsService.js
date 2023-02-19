@@ -2,12 +2,11 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const {
-  PLAYLISTS_STR, USERS_STR, COLLABORATIONS_STR,
-} = require('../../common/constants');
-const AuthorizationError = require('../../common/errors/AuthorizationError');
-const InvariantError = require('../../common/errors/InvariantError');
-const NotFoundError = require('../../common/errors/NotFoundError');
+const DbTables = require('../../common/utils/DbTables');
+const AuthorizationError = require(
+    '../../common/errors/subClasses/AuthorizationError');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const CollaborationsService = require('./CollaborationsService');
@@ -38,7 +37,7 @@ class PlaylistsService {
     const id = `playlist-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${PLAYLISTS_STR} VALUES(
+      text: `INSERT INTO ${DbTables.playlists} VALUES(
         $1, $2, $3
       ) RETURNING id`,
       values: [id, name, owner],
@@ -67,14 +66,17 @@ class PlaylistsService {
     const query = {
       text: `
         SELECT 
-          ${PLAYLISTS_STR}.id, ${PLAYLISTS_STR}.name, 
-          ${USERS_STR}.username
-        FROM ${PLAYLISTS_STR} 
-        LEFT JOIN ${USERS_STR} ON ${PLAYLISTS_STR}.owner = ${USERS_STR}.id
-        LEFT JOIN ${COLLABORATIONS_STR} ON 
-          ${COLLABORATIONS_STR}.playlist_id = ${PLAYLISTS_STR}.id
-        WHERE ${PLAYLISTS_STR}.owner = $1 OR ${COLLABORATIONS_STR}.user_id = $1
-        GROUP BY ${PLAYLISTS_STR}.id, ${USERS_STR}.username
+          ${DbTables.playlists}.id, ${DbTables.playlists}.name, 
+          ${DbTables.users}.username
+        FROM ${DbTables.playlists} 
+        LEFT JOIN ${DbTables.users} ON 
+          ${DbTables.playlists}.owner = ${DbTables.users}.id
+        LEFT JOIN ${DbTables.collaborations} ON 
+          ${DbTables.collaborations}.playlist_id = ${DbTables.playlists}.id
+        WHERE 
+          ${DbTables.playlists}.owner = $1 OR 
+          ${DbTables.collaborations}.user_id = $1
+        GROUP BY ${DbTables.playlists}.id, ${DbTables.users}.username
       `,
       values: [owner],
     };
@@ -95,11 +97,12 @@ class PlaylistsService {
     const query = {
       text: `
         SELECT 
-          ${PLAYLISTS_STR}.id, ${PLAYLISTS_STR}.name, 
-          ${USERS_STR}.username
-        FROM ${PLAYLISTS_STR} LEFT JOIN ${USERS_STR} ON 
-          ${PLAYLISTS_STR}.owner = ${USERS_STR}.id
-        WHERE ${PLAYLISTS_STR}.id = $1
+          ${DbTables.playlists}.id, ${DbTables.playlists}.name, 
+          ${DbTables.users}.username
+        FROM ${DbTables.playlists} 
+        LEFT JOIN ${DbTables.users} ON 
+          ${DbTables.playlists}.owner = ${DbTables.users}.id
+        WHERE ${DbTables.playlists}.id = $1
       `,
       values: [id],
     };
@@ -121,7 +124,7 @@ class PlaylistsService {
    */
   async deletePlaylist(id) {
     const query = {
-      text: `DELETE FROM ${PLAYLISTS_STR} WHERE id = $1 RETURNING id`,
+      text: `DELETE FROM ${DbTables.playlists} WHERE id = $1 RETURNING id`,
       values: [id],
     };
     const {rowCount} = await this._pool.query(query);
@@ -143,7 +146,7 @@ class PlaylistsService {
    */
   async verifyPlaylistOwner(id, userId) {
     const query = {
-      text: `SELECT owner FROM ${PLAYLISTS_STR} WHERE id = $1`,
+      text: `SELECT owner FROM ${DbTables.playlists} WHERE id = $1`,
       values: [id],
     };
     const {rows} = await this._pool.query(query);

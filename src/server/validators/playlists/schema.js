@@ -5,11 +5,11 @@ const PostPlaylistsPayloadSchema = Joi.object({
 });
 
 const PostPlaylistSongsPayloadSchema = Joi.object({
-  songId: Joi.string().required(),
+  songId: Joi.string().max(50).required(),
 });
 
 const DeletePlaylistSongsPayloadSchema = Joi.object({
-  songId: Joi.string().required(),
+  songId: Joi.string().max(50).required(),
 });
 
 module.exports = {

@@ -5,7 +5,7 @@ const PlaylistsService = require('../../services/PlaylistsService');
 const Validator = require('../../validators/collaborations');
 
 /**
- * Handler for "/collaborations" endpoint.
+ * Request handlers for `/collaborations` endpoint.
  */
 class CollaborationsHandler {
   /**
@@ -23,11 +23,12 @@ class CollaborationsHandler {
   }
 
   /**
-   * Add collaborator to playlist.
+   * Handler for `POST /collaborations` request.
    *
    * @param {object} req - Client Request object
    * @param {object} h - Hapi Response Toolkit
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async postCollab(req, h) {
@@ -52,10 +53,11 @@ class CollaborationsHandler {
   }
 
   /**
-   * Delete collaborator from playlist.
+   * Handler for `DELETE /collaborations` request.
    *
    * @param {object} req - Client Request object
    *
+   * @throws {ClientError}
    * @return {Promise<object>} Server Response
    */
   async deleteCollab(req) {

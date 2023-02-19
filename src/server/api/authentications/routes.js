@@ -5,6 +5,8 @@ const AuthenticationsHandler = require('./handler');
 const PATH_AUTHENTICATIONS = '/authentications';
 
 /**
+ * Function to return routes for `/authentications` endpoint.
+ *
  * @param {AuthenticationsHandler} handler
  * @return {object[]} The routes for server.
  */

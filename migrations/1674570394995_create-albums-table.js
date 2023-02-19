@@ -1,7 +1,7 @@
-const {ALBUMS_STR} = require('../src/common/constants');
+const DbTables = require('../src/common/utils/DbTables');
 
 exports.up = (pgm) => {
-  pgm.createTable(ALBUMS_STR, {
+  pgm.createTable(DbTables.albums, {
     id: {type: 'VARCHAR(50)', primaryKey: true},
     name: {type: 'TEXT', notNull: true},
     year: {type: 'INTEGER', notNull: true},
@@ -9,5 +9,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable(ALBUMS_STR);
+  pgm.dropTable(DbTables.albums);
 };

@@ -3,10 +3,10 @@
 const AuthenticationsService = require('../../services/AuthenticationsService');
 const UsersService = require('../../services/UsersService');
 const TokenManager = require('../../tokenize/TokenManager');
-const validator = require('../../validators/authentications');
+const Validator = require('../../validators/authentications');
 
 /**
- * Handlers for "/authentications" endpoint.
+ * Request handlers for `/authentications` endpoint.
  */
 class AuthenticationsHandler {
   /**
@@ -14,7 +14,7 @@ class AuthenticationsHandler {
    * @param {AuthenticationsService} utils.authenticationsService
    * @param {UsersService} utils.usersService
    * @param {TokenManager} utils.tokenManager
-   * @param {validator} utils.validator
+   * @param {Validator} utils.validator
    */
   constructor({
     authenticationsService, usersService,
@@ -27,7 +27,7 @@ class AuthenticationsHandler {
   }
 
   /**
-   * Handler for POST method.
+   * Handler for `POST /authentications` request.
    *
    * @param {object} req - Client Request object
    * @param {object} h - Hapi Response Toolkit
@@ -56,7 +56,7 @@ class AuthenticationsHandler {
   }
 
   /**
-   * Handler for PUT method.
+   * Handler for `PUT /authentications` request.
    *
    * @param {object} req - Client Request object
    *
@@ -81,7 +81,7 @@ class AuthenticationsHandler {
   }
 
   /**
-   * Handler for DELETE method.
+   * Handler for `DELETE /authentications` request.
    *
    * @param {object} req - Client Request object
    *

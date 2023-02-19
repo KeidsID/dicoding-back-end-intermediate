@@ -2,10 +2,11 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const {COLLABORATIONS_STR} = require('../../common/constants');
-const AuthorizationError = require('../../common/errors/AuthorizationError');
-const InvariantError = require('../../common/errors/InvariantError');
-const NotFoundError = require('../../common/errors/NotFoundError');
+const DbTables = require('../../common/utils/DbTables');
+const AuthorizationError = require(
+    '../../common/errors/subClasses/AuthorizationError');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const UsersService = require('./UsersService');
@@ -41,7 +42,7 @@ class CollaborationsService {
     const id = `collab-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${COLLABORATIONS_STR} VALUES(
+      text: `INSERT INTO ${DbTables.collaborations} VALUES(
         $1, $2, $3
       ) RETURNING id`,
       values: [id, playlistId, userId],
@@ -67,7 +68,7 @@ class CollaborationsService {
   async deleteCollab({playlistId, userId}) {
     const query = {
       text: `
-        DELETE FROM ${COLLABORATIONS_STR} 
+        DELETE FROM ${DbTables.collaborations} 
         WHERE playlist_id = $1 AND user_id = $2 RETURNING id
       `,
       values: [playlistId, userId],
@@ -91,7 +92,7 @@ class CollaborationsService {
   async verifyCollab(playlistId, userId) {
     const query = {
       text: `
-        SELECT id FROM ${COLLABORATIONS_STR} 
+        SELECT id FROM ${DbTables.collaborations} 
         WHERE playlist_id = $1 AND user_id = $2
       `,
       values: [playlistId, userId],

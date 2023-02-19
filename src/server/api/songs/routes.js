@@ -1,38 +1,34 @@
+/* eslint-disable no-unused-vars */
 const PATH_SONGS = '/songs';
 
-// For VsCode-JSDoc purpose
-// eslint-disable-next-line no-unused-vars
+// VsCode-JSDoc purpose
 const SongsHandler = require('./handler');
 
 /**
+ * Function to return routes for `/songs` endpoint.
  *
  * @param {SongsHandler} handler
  * @return {Array<object>} The routes for server.
  */
 const routes = (handler) => [
   {
-    method: 'POST',
-    path: PATH_SONGS,
+    method: 'POST', path: PATH_SONGS,
     handler: (req, h) => handler.postSong(req, h),
   },
   {
-    method: 'GET',
-    path: PATH_SONGS,
+    method: 'GET', path: PATH_SONGS,
     handler: (req) => handler.getSongs(req),
   },
   {
-    method: 'GET',
-    path: `${PATH_SONGS}/{id}`,
+    method: 'GET', path: `${PATH_SONGS}/{id}`,
     handler: (req) => handler.getSongById(req),
   },
   {
-    method: 'PUT',
-    path: `${PATH_SONGS}/{id}`,
+    method: 'PUT', path: `${PATH_SONGS}/{id}`,
     handler: (req) => handler.putSongById(req),
   },
   {
-    method: 'DELETE',
-    path: `${PATH_SONGS}/{id}`,
+    method: 'DELETE', path: `${PATH_SONGS}/{id}`,
     handler: (req) => handler.deleteSongById(req),
   },
 ];

@@ -6,6 +6,8 @@ const CollaborationsHandler = require('./handler');
 const PATH_COLLABORATIONS = '/collaborations';
 
 /**
+ * Function to return routes for `/collaborations` endpoint.
+ *
  * @param {CollaborationsHandler} handler
  * @return {object[]} The routes for server.
  */

@@ -6,6 +6,8 @@ const PlaylistsHandler = require('./handler');
 const PATH_PLAYLISTS = '/playlists';
 
 /**
+ * Function to return routes for `/playlists` endpoint.
+ *
  * @param {PlaylistsHandler} handler
  * @return {object[]} The routes for server.
  */

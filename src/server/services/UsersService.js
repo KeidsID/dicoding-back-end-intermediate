@@ -2,10 +2,11 @@ const bcrypt = require('bcrypt');
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const {USERS_STR} = require('../../common/constants');
-const AuthenticationError = require('../../common/errors/AuthenticationError');
-const InvariantError = require('../../common/errors/InvariantError');
-const NotFoundError = require('../../common/errors/NotFoundError');
+const DbTables = require('../../common/utils/DbTables');
+const AuthenticationError = require(
+    '../../common/errors/subClasses/AuthenticationError');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
 
 /**
  * CRUD Service for "users" table from Database
@@ -18,7 +19,7 @@ class UsersService {
   }
 
   /**
-   * Create and Add User to Database.
+   * Create and Add User into Database.
    *
    * @param {object} payload
    * @param {string} payload.username
@@ -36,7 +37,7 @@ class UsersService {
 
     const query = {
       text: `
-        INSERT INTO ${USERS_STR} VALUES(
+        INSERT INTO ${DbTables.users} VALUES(
           $1, $2, $3, $4
         ) RETURNING id
       `,
@@ -61,7 +62,10 @@ class UsersService {
    */
   async getUserById(id) {
     const query = {
-      text: `SELECT id, username, fullname FROM ${USERS_STR} WHERE id = $1`,
+      text: `
+        SELECT id, username, fullname FROM ${DbTables.users} 
+        WHERE id = $1
+      `,
       values: [id],
     };
     const {rows} = await this._pool.query(query);
@@ -82,7 +86,7 @@ class UsersService {
    */
   async verifyUsername(username) {
     const query = {
-      text: `SELECT * FROM ${USERS_STR} WHERE username = $1`,
+      text: `SELECT id FROM ${DbTables.users} WHERE username = $1`,
       values: [username],
     };
     const {rowCount} = await this._pool.query(query);
@@ -104,7 +108,10 @@ class UsersService {
    */
   async verifyCredential({username, password}) {
     const query = {
-      text: `SELECT * FROM ${USERS_STR} WHERE username = $1`,
+      text: `
+        SELECT id, password FROM ${DbTables.users} 
+        WHERE username = $1
+      `,
       values: [username],
     };
     const {rows} = await this._pool.query(query);

@@ -1,7 +1,7 @@
-const ClientError = require('./ClientError');
+const ClientError = require('../ClientError');
 
 /**
- * For bad Auth (401).
+ * Error handler for Bad Auth response (401).
  */
 class AuthenticationError extends ClientError {
   /**

@@ -2,9 +2,9 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const InvariantError = require('../../common/errors/InvariantError');
-const NotFoundError = require('../../common/errors/NotFoundError');
-const {ALBUMS_STR, SONGS_STR}= require('../../common/constants');
+const DbTables = require('../../common/utils/DbTables');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const SongsService = require('./SongsService');
@@ -22,7 +22,7 @@ class AlbumsService {
   }
 
   /**
-   * Create and add Album object to database.
+   * Create and add Album into database.
    *
    * @param {object} payload
    * @param {string} payload.name
@@ -35,7 +35,7 @@ class AlbumsService {
     const id = `album-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${ALBUMS_STR} VALUES($1, $2, $3) RETURNING id`,
+      text: `INSERT INTO ${DbTables.albums} VALUES($1, $2, $3) RETURNING id`,
       values: [id, name, year],
     };
     const {rows} = await this._pool.query(query);
@@ -48,7 +48,7 @@ class AlbumsService {
   }
 
   /**
-   * Get Album object from database based on the requested id.
+   * Get Album from database based on id.
    *
    * @param {string} id
    *
@@ -57,7 +57,7 @@ class AlbumsService {
    */
   async getAlbumById(id) {
     const query = {
-      text: `SELECT * FROM ${ALBUMS_STR} WHERE id = $1`,
+      text: `SELECT * FROM ${DbTables.albums} WHERE id = $1`,
       values: [id],
     };
     const {rows} = await this._pool.query(query);
@@ -68,17 +68,17 @@ class AlbumsService {
 
     const songs = await this._songsService.getSongsByAlbumId(id);
 
-    const albumDetail = rows[0];
-    albumDetail['songs'] = songs;
+    const albumObj = rows[0];
+    albumObj['songs'] = songs;
 
-    return albumDetail;
+    return albumObj;
   }
 
   /**
-   * Update Album object from database based on the requested id with
-   * a new value.
+   * Update Album from database based on id with a new value.
    *
    * @param {string} id
+   *
    * @param {object} payload
    * @param {string} payload.name
    * @param {number} payload.year
@@ -88,7 +88,7 @@ class AlbumsService {
   async editAlbumById(id, {name, year}) {
     const query = {
       text: `
-        UPDATE ${ALBUMS_STR} SET name = $1, year = $2
+        UPDATE ${DbTables.albums} SET name = $1, year = $2
         WHERE id = $3 RETURNING id
       `,
       values: [name, year, id],
@@ -101,7 +101,7 @@ class AlbumsService {
   }
 
   /**
-   * Delete an Album object from database based on the requested id.
+   * Delete an Album from database based on id.
    *
    * @param {string} id
    *
@@ -109,7 +109,7 @@ class AlbumsService {
    */
   async deleteAlbumById(id) {
     const query = {
-      text: `DELETE FROM ${ALBUMS_STR} WHERE id = $1 RETURNING id`,
+      text: `DELETE FROM ${DbTables.albums} WHERE id = $1 RETURNING id`,
       values: [id],
     };
     const {rowCount} = await this._pool.query(query);

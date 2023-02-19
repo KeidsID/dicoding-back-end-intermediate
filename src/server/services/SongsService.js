@@ -1,10 +1,9 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const InvariantError = require('../../common/errors/InvariantError');
-const NotFoundError = require('../../common/errors/NotFoundError');
-const {songsDbToJson} = require('../../common/utils/dbToJson');
-const {SONGS_STR} = require('../../common/constants');
+const DbTables = require('../../common/utils/DbTables');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
 
 /**
  * CRUD Service for "songs" table from Database.
@@ -17,36 +16,32 @@ class SongsService {
   }
 
   /**
-   * Create and add Song object to database.
+   * Create and add Song into database.
    *
    * @param {object} payload
    * @param {string} payload.title
    * @param {number} payload.year
    * @param {string} payload.genre
    * @param {string} payload.performer
-   * @param {number|undefined} payload.duration
-   * @param {string|undefined} payload.albumId
+   * @param {number | undefined} payload.duration
+   * @param {string | undefined} payload.albumId
    *
    * @throws {InvariantError}
    * @return {Promise<string>} Song id
    */
   async addSong({
-    title, year, genre,
-    performer, duration, albumId,
+    title, year, genre, performer,
+    duration, albumId,
   }) {
     const id = `song-${nanoid(16)}`;
 
-    // undefined value cannot be input into the database
-    const filteredDuration = duration !== undefined ? duration : null;
-    const filteredAlbumId = albumId !== undefined ? albumId : null;
-
     const query = {
-      text: `INSERT INTO ${SONGS_STR} VALUES(
+      text: `INSERT INTO ${DbTables.songs} VALUES(
         $1, $2, $3, $4, $5, $6, $7
       ) RETURNING id`,
       values: [
         id, title, year, performer,
-        genre, filteredDuration, filteredAlbumId,
+        genre, duration, albumId,
       ],
     };
     const {rows} = await this._pool.query(query);
@@ -59,25 +54,21 @@ class SongsService {
   }
 
   /**
-   * Get Array of Song object from database based on the requested id.
+   * Get Songs from database.
    *
    * @param {object} query
-   * @param {string} query.title
-   * @param {string} query.performer
+   * @param {string | undefined} query.title
+   * @param {string | undefined} query.performer
    *
    * @return {Promise<object[]>} Array of Song object
    */
-  async getSongs({title, performer}) {
-    // undefined value cannot be input into the database
-    const filteredTitle = (title ? title : '').toLowerCase();
-    const filteredPerformer = (performer ? performer : '').toLowerCase();
-
+  async getSongs({title = '', performer = ''}) {
     const query = {
       text: `
-          SELECT id, title, performer FROM ${SONGS_STR}
-          WHERE LOWER(title) LIKE $1 AND LOWER(performer) LIKE $2
+          SELECT id, title, performer FROM ${DbTables.songs}
+          WHERE title ILIKE $1 AND performer ILIKE $2
         `,
-      values: [`%${filteredTitle}%`, `%${filteredPerformer}%`],
+      values: [`%${title}%`, `%${performer}%`],
     };
 
     const {rows} = await this._pool.query(query);
@@ -86,17 +77,18 @@ class SongsService {
   }
 
   /**
-   * Get list of songs from Database based on Album id.
+   * Get Song from Database based on Album id.
    *
    * @param {string} albumId
    *
+   * @throws {NotFoundError}
    * @return {Promise<object[]>}
    */
   async getSongsByAlbumId(albumId) {
     const query = {
       text: `
-        SELECT id, title, performer 
-        FROM ${SONGS_STR} WHERE album_id = $1
+        SELECT id, title, performer FROM ${DbTables.songs} 
+        WHERE album_id = $1
       `,
       values: [albumId],
     };
@@ -106,7 +98,7 @@ class SongsService {
   }
 
   /**
-   * Get Song object from database based on the requested id.
+   * Get Song from database based on id.
    *
    * @param {string} id
    *
@@ -115,21 +107,25 @@ class SongsService {
    */
   async getSongById(id) {
     const query = {
-      text: `SELECT * FROM ${SONGS_STR} WHERE id = $1`,
+      text: `
+        SELECT 
+          id, title, year, performer,
+          genre, duration, album_id AS albumId
+        FROM ${DbTables.songs} WHERE id = $1
+      `,
       values: [id],
     };
-    const qResult = await this._pool.query(query);
+    const {rows} = await this._pool.query(query);
 
-    if (!qResult.rowCount) {
+    if (!rows.length) {
       throw new NotFoundError('Song not found');
     }
 
-    return qResult.rows.map(songsDbToJson)[0];
+    return rows[0];
   }
 
   /**
-   * Update Song object from database based on the requested id with
-   * a new value.
+   * Update Song from database based on id with a new value.
    *
    * @param {string} id
    * @param {object} payload
@@ -137,29 +133,25 @@ class SongsService {
    * @param {number} payload.year
    * @param {string} payload.genre
    * @param {string} payload.performer
-   * @param {number|undefined} payload.duration
-   * @param {string|undefined} payload.albumId
+   * @param {number | undefined} payload.duration
+   * @param {string | undefined} payload.albumId
    *
    * @throws {NotFoundError}
    */
   async editSongById(id, {
-    title, year, genre,
-    performer, duration, albumId,
+    title, year, genre, performer,
+    duration, albumId,
   }) {
-    // undefined value cannot be input into the database
-    const filteredDuration = duration !== undefined ? duration: null;
-    const filteredAlbumId = albumId !== undefined ? albumId : null;
-
     const query = {
       text: `
-        UPDATE ${SONGS_STR} SET 
+        UPDATE ${DbTables.songs} SET 
           title = $1, year = $2, genre = $3,
           performer = $4, duration = $5, album_id = $6
         WHERE id = $7 RETURNING id
       `,
       values: [
         title, year, genre, performer,
-        filteredDuration, filteredAlbumId, id,
+        duration, albumId, id,
       ],
     };
     const {rowCount} = await this._pool.query(query);
@@ -170,7 +162,7 @@ class SongsService {
   }
 
   /**
-   * Delete an Song object from database based on the requested id.
+   * Delete Song from database based on id.
    *
    * @param {string} id
    *
@@ -178,7 +170,7 @@ class SongsService {
    */
   async deleteSongById(id) {
     const query = {
-      text: `DELETE FROM ${SONGS_STR} WHERE id = $1 RETURNING id`,
+      text: `DELETE FROM ${DbTables.songs} WHERE id = $1 RETURNING id`,
       values: [id],
     };
     const {rowCount} = await this._pool.query(query);
@@ -189,7 +181,7 @@ class SongsService {
   }
 
   /**
-   * Verify if song id exist in the Database.
+   * Check if Song exist in the Database.
    *
    * @param {string} id
    *
@@ -197,7 +189,7 @@ class SongsService {
    */
   async verifySong(id) {
     const query = {
-      text: `SELECT id FROM ${SONGS_STR} WHERE id = $1`,
+      text: `SELECT id FROM ${DbTables.songs} WHERE id = $1`,
       values: [id],
     };
     const {rowCount} = await this._pool.query(query);

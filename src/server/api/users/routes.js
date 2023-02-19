@@ -5,6 +5,8 @@ const SongsHandler = require('./handler');
 const PATH_USERS = '/users';
 
 /**
+ * Function to return routes for `/users` endpoint.
+ *
  * @param {SongsHandler} handler
  * @return {object[]} The routes for server.
  */

@@ -1,7 +1,7 @@
 const {Pool} = require('pg');
 
-const {AUTHENTICATIONS_STR} = require('../../common/constants');
-const InvariantError = require('../../common/errors/InvariantError');
+const DbTables = require('../../common/utils/DbTables');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
 
 /**
  * CRUD Service for "authentications" table from Database.
@@ -14,13 +14,13 @@ class AuthenticationsService {
   }
 
   /**
-   * Add token to Database.
+   * Add token into Database.
    *
    * @param {string} token - Refresh Token
    */
   async addToken(token) {
     const query = {
-      text: `INSERT INTO ${AUTHENTICATIONS_STR} VALUES ($1)`,
+      text: `INSERT INTO ${DbTables.authentications} VALUES ($1)`,
       values: [token],
     };
     await this._pool.query(query);
@@ -36,7 +36,7 @@ class AuthenticationsService {
    */
   async verifyToken(token) {
     const query = {
-      text: `SELECT * FROM ${AUTHENTICATIONS_STR} WHERE token = $1`,
+      text: `SELECT * FROM ${DbTables.authentications} WHERE token = $1`,
       values: [token],
     };
     const {rowCount} = await this._pool.query(query);
@@ -53,7 +53,7 @@ class AuthenticationsService {
    */
   async deleteToken(token) {
     const query = {
-      text: `DELETE FROM ${AUTHENTICATIONS_STR} WHERE token = $1`,
+      text: `DELETE FROM ${DbTables.authentications} WHERE token = $1`,
       values: [token],
     };
     await this._pool.query(query);

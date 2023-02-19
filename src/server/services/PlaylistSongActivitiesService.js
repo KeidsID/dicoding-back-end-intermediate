@@ -1,10 +1,8 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const {
-  PLAYLIST_SONG_ACTIVITIES_STR, USERS_STR, SONGS_STR,
-} = require('../../common/constants');
-const InvariantError = require('../../common/errors/InvariantError');
+const DbTables = require('../../common/utils/DbTables');
+const InvariantError = require('../../common/errors/subClasses/InvariantError');
 
 /**
  * CRUD Service for "playlist_song_activities" table from Database.
@@ -31,7 +29,7 @@ class PlaylistSongActivitiesService {
     const id = `psActivity-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${PLAYLIST_SONG_ACTIVITIES_STR} VALUES(
+      text: `INSERT INTO ${DbTables.playlistSongActivities} VALUES(
         $1, $2, $3, $4, 'add'
       ) RETURNING id`,
       values: [id, playlistId, userId, songId],
@@ -53,10 +51,10 @@ class PlaylistSongActivitiesService {
    * @throws {InvariantError}
    */
   async recordDeleteSong(playlistId, userId, songId) {
-    const id = `psActivity-${nanoid(16)}`;
+    const id = `playlistSongActivity-${nanoid(16)}`;
 
     const query = {
-      text: `INSERT INTO ${PLAYLIST_SONG_ACTIVITIES_STR} VALUES(
+      text: `INSERT INTO ${DbTables.playlistSongActivities} VALUES(
         $1, $2, $3, $4, 'delete'
       ) RETURNING id`,
       values: [id, playlistId, userId, songId],
@@ -79,19 +77,19 @@ class PlaylistSongActivitiesService {
     const query = {
       text: `
         SELECT 
-          ${USERS_STR}.username, ${SONGS_STR}.title,
-          ${PLAYLIST_SONG_ACTIVITIES_STR}.action, 
-          ${PLAYLIST_SONG_ACTIVITIES_STR}.time
-        FROM ${PLAYLIST_SONG_ACTIVITIES_STR}
-        LEFT JOIN ${USERS_STR} ON
-          ${USERS_STR}.id = ${PLAYLIST_SONG_ACTIVITIES_STR}.user_id
-        LEFT JOIN ${SONGS_STR} ON
-          ${SONGS_STR}.id = ${PLAYLIST_SONG_ACTIVITIES_STR}.song_id
-        WHERE ${PLAYLIST_SONG_ACTIVITIES_STR}.playlist_id = $1
+          ${DbTables.users}.username, ${DbTables.songs}.title,
+          ${DbTables.playlistSongActivities}.action, 
+          ${DbTables.playlistSongActivities}.time
+        FROM ${DbTables.playlistSongActivities}
+        LEFT JOIN ${DbTables.users} ON
+          ${DbTables.users}.id = ${DbTables.playlistSongActivities}.user_id
+        LEFT JOIN ${DbTables.songs} ON
+          ${DbTables.songs}.id = ${DbTables.playlistSongActivities}.song_id
+        WHERE ${DbTables.playlistSongActivities}.playlist_id = $1
         GROUP BY 
-          ${PLAYLIST_SONG_ACTIVITIES_STR}.id,
-          ${USERS_STR}.username,
-          ${SONGS_STR}.title
+          ${DbTables.playlistSongActivities}.id,
+          ${DbTables.users}.username,
+          ${DbTables.songs}.title
         ORDER BY time
       `,
       values: [id],

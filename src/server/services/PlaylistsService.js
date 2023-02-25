@@ -15,12 +15,15 @@ const CollaborationsService = require('./CollaborationsService');
  * CRUD Service for "playlists" table from Database.
  */
 class PlaylistsService {
+  #pool;
+  #collabsService;
+
   /**
    * @param {CollaborationsService} collaborationsService
    */
   constructor(collaborationsService) {
-    this._pool = new Pool();
-    this._collaborationsService = collaborationsService;
+    this.#pool = new Pool();
+    this.#collabsService = collaborationsService;
   }
 
   /**
@@ -42,13 +45,13 @@ class PlaylistsService {
       ) RETURNING id`,
       values: [id, name, owner],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new InvariantError('Failed to add playlist');
     }
 
-    await this._collaborationsService.addCollab({
+    await this.#collabsService.addCollab({
       playlistId: id, userId: owner,
     });
 
@@ -80,7 +83,7 @@ class PlaylistsService {
       `,
       values: [owner],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     return rows;
   }
@@ -106,7 +109,7 @@ class PlaylistsService {
       `,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new NotFoundError('Playlist Not Found');
@@ -127,7 +130,7 @@ class PlaylistsService {
       text: `DELETE FROM ${DbTables.playlists} WHERE id = $1 RETURNING id`,
       values: [id],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError(
@@ -149,7 +152,7 @@ class PlaylistsService {
       text: `SELECT owner FROM ${DbTables.playlists} WHERE id = $1`,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new NotFoundError('Playlist Not Found');
@@ -177,7 +180,7 @@ class PlaylistsService {
       }
     }
 
-    await this._collaborationsService.verifyCollab(id, userId);
+    await this.#collabsService.verifyCollab(id, userId);
   }
 }
 

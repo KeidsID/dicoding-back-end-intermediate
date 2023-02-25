@@ -1,13 +1,14 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
 
-const {playlistAuthStrategy} = require('./common/constants');
+const configs = require('../../common/utils/configs');
+const {userIdAuthStrategy} = require('../../common/constants');
 const onPreResponseHandler = require('./onPreResponseHandler');
 
 const configuredServer = async () => {
   const server = Hapi.server({
-    host: process.env.HOST,
-    port: process.env.PORT,
+    host: configs.server.host,
+    port: configs.server.port,
     routes: {
       cors: {
         origin: ['*'],
@@ -19,13 +20,13 @@ const configuredServer = async () => {
     {plugin: Jwt},
   ]);
 
-  server.auth.strategy(playlistAuthStrategy, 'jwt', {
-    keys: process.env.ACCESS_TOKEN_KEY,
+  server.auth.strategy(userIdAuthStrategy, 'jwt', {
+    keys: configs.jwt.accessKey,
     verify: {
       aud: false,
       iss: false,
       sub: false,
-      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+      maxAgeSec: configs.jwt.accessTokenAge,
     },
     validate: (artifacts) => ({
       isValid: true,

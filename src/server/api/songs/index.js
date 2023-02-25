@@ -3,6 +3,7 @@ const SongsHandler = require('./handler');
 const routes = require('./routes');
 
 // VsCode-JSDoc purpose
+const Hapi = require('@hapi/hapi');
 const SongsService = require('../../services/SongsService');
 const Validator = require('../../validators/songs');
 
@@ -13,7 +14,7 @@ module.exports = {
   name: 'songs',
   version: '1.0.1',
   /**
-   * @param {object} server - The Hapi Server.
+   * @param {Hapi.Server} server
    *
    * @param {object} options - The options for this plugin.
    * @param {SongsService} options.service

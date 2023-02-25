@@ -9,10 +9,12 @@ const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
  * CRUD Service for "songs" table from Database.
  */
 class SongsService {
+  #pool;
+
   /**
   */
   constructor() {
-    this._pool = new Pool();
+    this.#pool = new Pool();
   }
 
   /**
@@ -44,7 +46,7 @@ class SongsService {
         genre, duration, albumId,
       ],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new InvariantError('Failed to add song');
@@ -70,14 +72,13 @@ class SongsService {
         `,
       values: [`%${title}%`, `%${performer}%`],
     };
-
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     return rows;
   }
 
   /**
-   * Get Song from Database based on Album id.
+   * Get Array of Songs from Database based on Album id.
    *
    * @param {string} albumId
    *
@@ -92,7 +93,7 @@ class SongsService {
       `,
       values: [albumId],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     return rows;
   }
@@ -115,7 +116,7 @@ class SongsService {
       `,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new NotFoundError('Song not found');
@@ -154,7 +155,7 @@ class SongsService {
         duration, albumId, id,
       ],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError('Failed to update song. Id not found');
@@ -173,7 +174,7 @@ class SongsService {
       text: `DELETE FROM ${DbTables.songs} WHERE id = $1 RETURNING id`,
       values: [id],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError('Failed to delete song. Id not found');
@@ -192,7 +193,7 @@ class SongsService {
       text: `SELECT id FROM ${DbTables.songs} WHERE id = $1`,
       values: [id],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError('Song not found');

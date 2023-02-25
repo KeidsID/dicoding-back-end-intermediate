@@ -1,6 +1,7 @@
 [class-link]: https://www.dicoding.com/academies/271
 [pm-v1]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/01-open-music-api-v1/OpenMusic%20API%20V1%20Test.zip
 [pm-v2]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/02-open-music-api-v2/OpenMusic%20API%20V2%20Test.zip
+[pm-v3]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/03-open-music-api-v3/OpenMusic%20API%20V3%20Test.zip
 
 # dicoding-back-end-intermediate
 
@@ -12,16 +13,26 @@ This project is a learning outcome through the platform dicoding.com. The aim is
 
 - [API.v1 test zip][pm-v1].
 - [API.v2 test zip][pm-v2].
+- [API.v3 test zip][pm-v3].
 
+### **List of README.md Contents:**
 
-## Project Set Up
+- [Project Set Up](#project-set-up)
+- [TO DO API.v1](#to-do-apiv1)
+- [TO DO API.v1 Details](#to-do-apiv1-details)
+- [TO DO API.v2](#to-do-apiv2)
+- [TO DO API.v2 Details](#to-do-apiv2-details)
+- [TO DO API.v3](#to-do-apiv3)
+- [TO DO API.v3 Details](#to-do-apiv3-details)
+
+# Project Set Up
 
 - Create the "**.env**" file with the following data below:
 
-  ```perl
+  ```sh
   # Server Config
   HOST=localhost
-  PORT=5000
+  PORT=<desired port>
 
   # node-postgres Config
   PGUSER=<your psql user>
@@ -34,6 +45,18 @@ This project is a learning outcome through the platform dicoding.com. The aim is
   ACCESS_TOKEN_KEY=<random string>
   REFRESH_TOKEN_KEY=<random string>
   ACCESS_TOKEN_AGE=<duration in ms>
+
+  # RabbitMQ config
+  RABBITMQ_SERVER=<your RabbitMQ server>
+
+  # SMTP config
+  MAIL_HOST=<SMPT host>
+  MAIL_PORT=<SMPT port>
+  MAIL_ADDRESS=<SMTP username credential>
+  MAIL_PASSWORD=<SMTP password credential>
+
+  # Redis config
+  REDIS_SERVER=<your Redis host>
   ```
 
 - Then run this command
@@ -44,18 +67,16 @@ This project is a learning outcome through the platform dicoding.com. The aim is
 
 **Note**:
 
-If you do TRUNCATE tables, make sure to re-add default album data (id: album-unknown) into "**albums**" table
+If you do TRUNCATE tables, make sure to re-add default album data (id: album-unknown) into "**albums**" table.
+
+```sql
+INSERT INTO albums(id, name, year)
+VALUES('album-unknown', 'Unknown', 1945)
+```
 
 OR
 
 Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.js**".
-
-## List of README.md Contents
-
-- [TO DO API.v1](#to-do-apiv1)
-- [TO DO API.v1 Details](#to-do-apiv1-details)
-- [TO DO API.v2](#to-do-apiv2)
-- [TO DO API.v2 Details](#to-do-apiv2-details)
 
 # TO DO API.v1
 
@@ -93,12 +114,30 @@ Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.j
 - [x] Activities endpoint for Playlist Log History.
 - [x] Keep optional features from API.v1.
 
+# TO DO API.v3
+
+[See TO DO API.v3 Details](#to-do-apiv3-details).
+
+## Mandatory Tasks
+
+- [ ] Export playlist feature.
+- [ ] Upload album cover feature.
+- [ ] Like and Unlike albums feature.
+- [ ] Server-Side cache.
+- [x] Keep features from API.v2.
+
+## Optional Tasks
+
+No optional task yay.
+
 # TO DO API.v1 Details
 
-NavBar:
-[Back to Top](#dicoding-back-end-intermediate) |
-[Optional Tasks](#optional-tasks-2) |
-[TO DO API.v2 Details](#to-do-apiv2-details)
+<p align="center">
+  <a href="#dicoding-back-end-intermediate">Back to Top</a> |
+  <a href="#optional-tasks-3">Optional Tasks</a> |
+  <a href="#to-do-apiv2-details">TO DO API.v2 Details</a> |
+  <a href="#to-do-apiv3-details">TO DO API.v3 Details</a>
+</p>
 
 ## Mandatory Tasks
 
@@ -218,9 +257,11 @@ Song obj structures:
 
 ## Optional Tasks
 
-NavBar:
-[Back to Top](#dicoding-back-end-intermediate) |
-[Back to Mandatory Tasks](#to-do-apiv1-details)
+<p align="center">
+  <a href="#dicoding-back-end-intermediate">Back to Top</a> |
+  <a href="#to-do-apiv1-details">Back to Mandatory Tasks</a> |
+  <a href="#to-do-apiv3-details">TO DO API.v3 Details</a>
+</p>
 
 ### **1. "/albums/{id}" endpoint response array of Song on Album too**
 
@@ -257,10 +298,12 @@ Make the **GET /songs** support query params for searching.
 
 # TO DO API.v2 Details
 
-NavBar:
-[Back to Top](#dicoding-back-end-intermediate) |
-[Optional Tasks](#optional-tasks-3) |
-[TO DO API.v1 Details](#to-do-apiv1-details)
+<p align="center">
+  <a href="#dicoding-back-end-intermediate">Back to Top</a> |
+  <a href="#optional-tasks-4">Optional Tasks</a> |
+  <a href="#to-do-apiv1-details">TO DO API.v1 Details</a> |
+  <a href="#to-do-apiv3-details">TO DO API.v3 Details</a>
+</p>
 
 ## Mandatory Tasks
 
@@ -277,7 +320,7 @@ NavBar:
 - JWT token payload contains **userId**.
 - JWT token secret key value stored on envs as **ACCESS_TOKEN_KEY** and **REFRESH_TOKEN_KEY**.
 
-### **2.Playlist endpoint**
+### **2. Playlist endpoint**
 
 ![playlists-structure](readme-assets/struktur-api-playlists.png)
 
@@ -422,10 +465,12 @@ The previous error handler is still in use, but there is a new handler for Auth.
 
 ## Optional Tasks
 
-NavBar:
-[Back to Top](#dicoding-back-end-intermediate) |
-[Back to Mandatory Tasks](#to-do-apiv2-details) |
-[TO DO API.v1 Details](#to-do-apiv1-details)
+<p align="center">
+  <a href="#dicoding-back-end-intermediate">Back to Top</a> |
+  <a href="#to-do-apiv2-details">Back to Mandatory Tasks</a> |
+  <a href="#to-do-apiv1-details">TO DO API.v1 Details</a> |
+  <a href="#to-do-apiv3-details">TO DO API.v3 Details</a>
+</p>
 
 ### **1. Playlists Collaboration Feature**
 
@@ -486,3 +531,150 @@ Response example:
 
 - Songs list from album detail.
 - Query param for search songs.
+
+# TO DO API.v3 Details
+
+<p align="center">
+  <a href="#dicoding-back-end-intermediate">Back to Top</a> |
+  <a href="#to-do-apiv1-details">TO DO API.v1 Details</a> |
+  <a href="#to-do-apiv2-details">TO DO API.v2 Details</a>
+</p>
+
+### **1. Export Playlist Feature**
+
+**Server Route**:
+
+- Endpoint: **POST /export/playlists/{id}**
+- Body Req (JSON):
+  ```json
+  {
+    targetEmail: <string>
+  }
+  ```
+
+**Server Response**:
+
+- Status code: **201**
+- Body Res:
+  ```json
+  {
+    "status": "success",
+    "message": <any string but not null>
+  }
+  ```
+
+**Conditions**:
+
+- Using RabbitMQ.
+  - The RabbitMQ server host value must be stored in the environment variable as **RABBITMQ_SERVER**.
+- Only owner can export his/her own playlists.
+- Also create the consumer source code in a new project, not in this one.
+- The export result is in JSON format file.
+  ```json
+  {
+    "playlist": {
+      "id": "playlist-Mk8AnmCp210PwT6B",
+      "name": "My Favorite Coldplay Song",
+      "songs": [
+        {
+          "id": "song-Qbax5Oy7L8WKf74l",
+          "title": "Life in Technicolor",
+          "performer": "Coldplay"
+        },
+        {
+          "id": "song-poax5Oy7L8WKllqw",
+          "title": "Centimeteries of London",
+          "performer": "Coldplay"
+        },
+        {
+          "id": "song-Qalokam7L8WKf74l",
+          "title": "Lost!",
+          "performer": "Coldplay"
+        }
+      ]
+    }
+  }
+  ```
+- Send the export result through email using [nodemailer](https://nodemailer.com/).
+  - SMTP credentials value must be stored in the environment variable as **MAIL_ADDRESS** and **MAIL_PASSWORD**.
+  - SMTP server value must be stored in the environment variable as **MAIL_HOST** and **MAIL_PORT**.
+
+### **2. Upload Album Cover Feature**
+
+**Server Route**:
+
+- Endpoint: **POST /albums/{id}/covers**
+- Body Req:
+  ```json
+  {
+    "cover": <image file>
+  }
+  ```
+
+**Server Response**:
+
+- Status code: **201**
+- Body Res:
+  ```json
+  {
+    "status": "success",
+    "message": <any string but not null>
+  }
+  ```
+
+**Conditions**:
+
+- Only [MIME types of images](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#image_types) are allowed to upload.
+- File max size is **512000 Bytes**.
+- Local storage or AWS S3 are allowed to use.
+  - When using AWS S3 Bucket, the bucket name must be stored in the environment variable as **AWS_BUCKET_NAME**.
+- **GET /albums/{id}** must response uploaded **coverUrl** too.
+
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "album": {
+        "id": "album-Mk8AnmCp210PwT6B",
+        "name": "Viva la Vida",
+        "year": 2018
+        "coverUrl": "http://...."
+      }
+    }
+  }
+  ```
+
+  - coverUrl response an uploaded image.
+  - If cover not uploaded yet, then response null on coverUrl instead.
+  - When uploadig cover to an album that already has cover, the old cover are replaced.
+
+### **3. Like and Unlike Albums Feature**
+
+![album-likes-structure](readme-assets/struktur-api-album-likes.png)
+
+<p align="center">*any: Any <b>string,</b> but not <b>null</b>.</p>
+
+**Conditions**:
+
+- Liking or unliking an album is a strict resource so authentication is required to access it. This aims to find out whether the user has liked the album.
+- If the user hasn't liked the album, then the "**POST action /albums/{id}/likes**" is to like the album. If the user has already liked the album, then the action is unliking.
+
+### **4. Server-Side Cache**
+
+- Implement a server-side cache on the number of likes on an album (**GET /albums/{id}/likes**).
+- Cache expiration time: 30 minutes.
+- The response header for cache result is "**X-Data-Source**" with "cache" value.
+- Cache should be deleted every time there is a change in the number of likes on an album.
+- Must use Redis (Memurai for Windows) memory caching engine.
+  - Redis **Host** value must be stored in the environment variable as **REDIS_SERVER**.
+
+### **5. Keep Features from API.v2**
+
+Of course 🙄.
+
+<p align="center">
+  <a href="#dicoding-back-end-intermediate">Back to Top</a> |
+  <a href="#to-do-apiv1-details">TO DO API.v1 Details</a> |
+  <a href="#to-do-apiv2-details">TO DO API.v2 Details</a> |
+  <a href="#to-do-apiv3-details">TO DO API.v3 Details</a>
+</p>

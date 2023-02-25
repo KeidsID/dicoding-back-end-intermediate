@@ -1,7 +1,8 @@
 /**
  * Abstract Class with list of static Table Name from Database.
  *
- * Example: `DbTables.tableName`
+ * @example
+ * DbTables.tableName
  *
  * @abstract
  */

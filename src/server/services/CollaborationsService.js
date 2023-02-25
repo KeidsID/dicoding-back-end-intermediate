@@ -18,12 +18,15 @@ const UsersService = require('./UsersService');
  * and "users" table.
  */
 class CollaborationsService {
+  #pool;
+  #usersService;
+
   /**
    * @param {UsersService} usersService
    */
   constructor(usersService) {
-    this._pool = new Pool();
-    this._usersService = usersService;
+    this.#pool = new Pool();
+    this.#usersService = usersService;
   }
 
   /**
@@ -37,7 +40,7 @@ class CollaborationsService {
    * @return {Promise<string>} Collab id
    */
   async addCollab({playlistId, userId}) {
-    await this._usersService.getUserById(userId); // Check if user exist
+    await this.#usersService.getUserById(userId); // Check if user exist
 
     const id = `collab-${nanoid(16)}`;
 
@@ -47,7 +50,7 @@ class CollaborationsService {
       ) RETURNING id`,
       values: [id, playlistId, userId],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new InvariantError('Failed to add collaborator');
@@ -73,7 +76,7 @@ class CollaborationsService {
       `,
       values: [playlistId, userId],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError(
@@ -97,7 +100,7 @@ class CollaborationsService {
       `,
       values: [playlistId, userId],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new AuthorizationError('You have no access');

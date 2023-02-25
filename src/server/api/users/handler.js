@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
+const Hapi = require('@hapi/hapi');
 const UsersService = require('../../services/UsersService');
 const Validator = require('../../validators/users');
 
@@ -7,27 +8,30 @@ const Validator = require('../../validators/users');
  * Request handlers for `/users` endpoint.
  */
 class UsersHandler {
+  #service;
+  #validator;
+
   /**
    * @param {UsersService} service
    * @param {Validator} validator
    */
   constructor(service, validator) {
-    this._service = service;
-    this._validator = validator;
+    this.#service = service;
+    this.#validator = validator;
   }
 
   /**
    * Handler for `POST /users` request.
    *
-   * @param {object} req - Client Request object
-   * @param {object} h - Hapi Response Toolkit
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
    *
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async postUser(req, h) {
-    this._validator.validatePayload(req.payload);
+    this.#validator.validatePayload(req.payload);
 
-    const userId = await this._service.addUser(req.payload);
+    const userId = await this.#service.addUser(req.payload);
 
     const response = h.response({
       status: 'success',

@@ -1,5 +1,5 @@
-const playlistAuthStrategy = 'playlist_auth_strategy';
+const userIdAuthStrategy = 'userId_auth_strategy';
 
 const currentYear = new Date().getFullYear();
 
-module.exports = {playlistAuthStrategy, currentYear};
+module.exports = {userIdAuthStrategy, currentYear};

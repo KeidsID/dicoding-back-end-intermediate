@@ -3,6 +3,7 @@ const UsersHandler = require('./handler');
 const routes = require('./routes');
 
 // VsCode-JsDoc purpose
+const Hapi = require('@hapi/hapi');
 const UsersService = require('../../services/UsersService');
 const Validator = require('../../validators/users');
 
@@ -13,7 +14,7 @@ module.exports = {
   name: 'users',
   version: '1.0.0',
   /**
-   * @param {object} server - The Hapi Server.
+   * @param {Hapi.Server} server
    *
    * @param {object} options - The options for this plugin.
    * @param {UsersService} options.service

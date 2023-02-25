@@ -13,12 +13,15 @@ const SongsService = require('./SongsService');
  * CRUD Service for "albums" table from Database.
  */
 class AlbumsService {
+  #pool;
+  #songsService;
+
   /**
    * @param {SongsService} songsService
    */
   constructor(songsService) {
-    this._pool = new Pool();
-    this._songsService = songsService;
+    this.#pool = new Pool();
+    this.#songsService = songsService;
   }
 
   /**
@@ -38,7 +41,7 @@ class AlbumsService {
       text: `INSERT INTO ${DbTables.albums} VALUES($1, $2, $3) RETURNING id`,
       values: [id, name, year],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows[0].id) {
       throw new InvariantError('Failed to add album');
@@ -60,13 +63,13 @@ class AlbumsService {
       text: `SELECT * FROM ${DbTables.albums} WHERE id = $1`,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new NotFoundError('Album not found');
     }
 
-    const songs = await this._songsService.getSongsByAlbumId(id);
+    const songs = await this.#songsService.getSongsByAlbumId(id);
 
     const albumObj = rows[0];
     albumObj['songs'] = songs;
@@ -93,7 +96,7 @@ class AlbumsService {
       `,
       values: [name, year, id],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError('Failed to update album. Id not found');
@@ -112,7 +115,7 @@ class AlbumsService {
       text: `DELETE FROM ${DbTables.albums} WHERE id = $1 RETURNING id`,
       values: [id],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError('Failed to delete album. Id not found');

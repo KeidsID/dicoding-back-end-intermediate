@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const configuredServer = require('./configuredServer');
+const configuredServer = require('./server/configs/configuredServer');
 
 // "albums" endpoint envs
 const albumsPlugin = require('./server/api/albums');

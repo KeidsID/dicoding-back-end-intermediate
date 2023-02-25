@@ -4,6 +4,7 @@ const PlaylistsHandler = require('./handler');
 const routes = require('./routes');
 
 // VsCode-JsDoc purpose
+const Hapi = require('@hapi/hapi');
 const PlaylistsService = require('../../services/PlaylistsService');
 const PlaylistSongsService = require('../../services/PlaylistSongsService');
 const PlaylistSongActivitiesService = require(
@@ -17,7 +18,7 @@ module.exports = {
   name: 'playlists',
   version: '1.2.1',
   /**
-   * @param {object} server - The Hapi Server.
+   * @param {Hapi.Server} server
    *
    * @param {object} options - The options for this plugin.
    * @param {PlaylistsService} options.playlistsService

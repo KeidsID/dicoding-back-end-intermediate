@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
 const Hapi = require('@hapi/hapi');
-const AuthenticationsService = require('../../services/AuthenticationsService');
-const UsersService = require('../../services/UsersService');
+const AuthenticationsService = require(
+    '../../services/db/AuthenticationsService');
+const UsersService = require('../../services/db/UsersService');
 const TokenManager = require('../../tokenize/TokenManager');
 const Validator = require('../../validators/authentications');
 

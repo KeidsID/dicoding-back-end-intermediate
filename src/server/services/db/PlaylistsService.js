@@ -2,11 +2,13 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
+const DbTables = require('../../../common/utils/DbTables');
 const AuthorizationError = require(
-    '../../common/errors/subClasses/AuthorizationError');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
-const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
+    '../../../common/errors/subClasses/AuthorizationError');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
+const NotFoundError = require(
+    '../../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const CollaborationsService = require('./CollaborationsService');
@@ -59,13 +61,13 @@ class PlaylistsService {
   }
 
   /**
-   * Get list of playlists based on owner from Database.
+   * Get list of playlists based on user id from Database.
    *
-   * @param {string} owner
+   * @param {string} userId
    *
    * @return {Promise<object[]>} Array of Playlist
    */
-  async getPlaylists(owner) {
+  async getPlaylists(userId) {
     const query = {
       text: `
         SELECT 
@@ -81,7 +83,7 @@ class PlaylistsService {
           ${DbTables.collaborations}.user_id = $1
         GROUP BY ${DbTables.playlists}.id, ${DbTables.users}.username
       `,
-      values: [owner],
+      values: [userId],
     };
     const {rows} = await this.#pool.query(query);
 

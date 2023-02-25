@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
 const Hapi = require('@hapi/hapi');
-const CollaborationsService = require('../../services/CollaborationsService');
-const PlaylistsService = require('../../services/PlaylistsService');
+const CollaborationsService = require(
+    '../../services/db/CollaborationsService');
+const PlaylistsService = require('../../services/db/PlaylistsService');
 const Validator = require('../../validators/collaborations');
 
 /**

@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
 const Hapi = require('@hapi/hapi');
-const PlaylistsService = require('../../services/PlaylistsService');
-const PlaylistSongsService = require('../../services/PlaylistSongsService');
+const PlaylistsService = require('../../services/db/PlaylistsService');
+const PlaylistSongsService = require('../../services/db/PlaylistSongsService');
 const PlaylistSongActivitiesService = require(
-    '../../services/PlaylistSongActivitiesService');
+    '../../services/db/PlaylistSongActivitiesService');
 const validator = require('../../validators/playlists');
 
 /**

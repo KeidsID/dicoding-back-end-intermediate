@@ -4,7 +4,6 @@ const routes = require('./routes');
 
 // VsCode-JsDoc purpose
 const Hapi = require('@hapi/hapi');
-const UsersService = require('../../services/UsersService');
 const Validator = require('../../validators/users');
 
 /**

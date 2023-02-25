@@ -2,9 +2,11 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
-const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
+const DbTables = require('../../../common/utils/DbTables');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
+const NotFoundError = require(
+    '../../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const SongsService = require('./SongsService');

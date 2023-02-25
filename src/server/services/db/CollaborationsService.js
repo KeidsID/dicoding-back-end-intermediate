@@ -2,11 +2,13 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
+const DbTables = require('../../../common/utils/DbTables');
 const AuthorizationError = require(
-    '../../common/errors/subClasses/AuthorizationError');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
-const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
+    '../../../common/errors/subClasses/AuthorizationError');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
+const NotFoundError = require(
+    '../../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const UsersService = require('./UsersService');

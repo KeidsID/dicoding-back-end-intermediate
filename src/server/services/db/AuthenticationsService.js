@@ -1,7 +1,8 @@
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const DbTables = require('../../../common/utils/DbTables');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
 
 /**
  * CRUD Service for "authentications" table from Database.

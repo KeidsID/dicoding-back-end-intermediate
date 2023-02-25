@@ -1,6 +1,6 @@
 {
   "name": "dicoding-back-end-intermediate",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Project task from dicoding.com intermediate back-end class.",
   "main": "./src/main.js",
   "type": "commonjs",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@hapi/hapi": "^21.2.0",
     "@hapi/jwt": "^3.1.0",
+    "amqplib": "^0.10.3",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "joi": "^17.7.0",

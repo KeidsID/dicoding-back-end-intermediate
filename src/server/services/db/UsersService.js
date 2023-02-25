@@ -2,11 +2,13 @@ const bcrypt = require('bcrypt');
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
+const DbTables = require('../../../common/utils/DbTables');
 const AuthenticationError = require(
-    '../../common/errors/subClasses/AuthenticationError');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
-const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
+    '../../../common/errors/subClasses/AuthenticationError');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
+const NotFoundError = require(
+    '../../../common/errors/subClasses/NotFoundError');
 
 /**
  * CRUD Service for "users" table from Database

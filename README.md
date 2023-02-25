@@ -2,12 +2,15 @@
 [pm-v1]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/01-open-music-api-v1/OpenMusic%20API%20V1%20Test.zip
 [pm-v2]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/02-open-music-api-v2/OpenMusic%20API%20V2%20Test.zip
 [pm-v3]: https://github.com/dicodingacademy/a271-backend-menengah-labs/raw/099-shared-files/03-submission-content/03-open-music-api-v3/OpenMusic%20API%20V3%20Test.zip
+[my-consumer]: https://github.com/KeidsID/dicoding-back-end-intermediate-mq-consumer
 
 # dicoding-back-end-intermediate
 
 Project task from [dicoding.com Back-End Intermediate Class][class-link].
 
-This project is a learning outcome through the platform dicoding.com. The aim is to enable students to create a RestfulAPI rich in features, including data validations, database relations, and auth with JWT Token.
+This project is a learning outcome through the platform dicoding.com. The aim is to enable students to create a RestfulAPI rich in features, including data validations, database relations, auth with JWT Token, MQ, File Storage, and Server-Side Cache.
+
+Link to MQ Consumer: [dicoding-back-end-intermediate-mq-consumer][my-consumer]
 
 ### **Postman collections and envs for testing this project:**
 
@@ -30,30 +33,24 @@ This project is a learning outcome through the platform dicoding.com. The aim is
 - Create the "**.env**" file with the following data below:
 
   ```sh
-  # Server Config
+  # Server config
   HOST=localhost
   PORT=<desired port>
 
-  # node-postgres Config
+  # node-postgres config
   PGUSER=<your psql user>
   PGHOST=<your psql host>
   PGPASSWORD=<your psql password>
   PGDATABASE=<your psql database name>
   PGPORT=<your psql port>
 
-  # Token Config
+  # JWT config
   ACCESS_TOKEN_KEY=<random string>
   REFRESH_TOKEN_KEY=<random string>
   ACCESS_TOKEN_AGE=<duration in ms>
 
   # RabbitMQ config
   RABBITMQ_SERVER=<your RabbitMQ server>
-
-  # SMTP config
-  MAIL_HOST=<SMPT host>
-  MAIL_PORT=<SMPT port>
-  MAIL_ADDRESS=<SMTP username credential>
-  MAIL_PASSWORD=<SMTP password credential>
 
   # Redis config
   REDIS_SERVER=<your Redis host>
@@ -120,7 +117,7 @@ Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.j
 
 ## Mandatory Tasks
 
-- [ ] Export playlist feature.
+- [x] Export playlist feature. MQ Consumer: [dicoding-back-end-intermediate-mq-consumer][my-consumer]
 - [ ] Upload album cover feature.
 - [ ] Like and Unlike albums feature.
 - [ ] Server-Side cache.
@@ -568,8 +565,8 @@ Response example:
 - Using RabbitMQ.
   - The RabbitMQ server host value must be stored in the environment variable as **RABBITMQ_SERVER**.
 - Only owner can export his/her own playlists.
-- Also create the consumer source code in a new project, not in this one.
 - The export result is in JSON format file.
+
   ```json
   {
     "playlist": {
@@ -595,9 +592,11 @@ Response example:
     }
   }
   ```
-- Send the export result through email using [nodemailer](https://nodemailer.com/).
-  - SMTP credentials value must be stored in the environment variable as **MAIL_ADDRESS** and **MAIL_PASSWORD**.
-  - SMTP server value must be stored in the environment variable as **MAIL_HOST** and **MAIL_PORT**.
+
+- Also create the consumer source code in a new project, not in this one. With condition below.
+  - Send the export result through email using [nodemailer](https://nodemailer.com/).
+    - SMTP credentials value must be stored in the environment variable as **MAIL_ADDRESS** and **MAIL_PASSWORD**.
+    - SMTP server value must be stored in the environment variable as **MAIL_HOST** and **MAIL_PORT**.
 
 ### **2. Upload Album Cover Feature**
 

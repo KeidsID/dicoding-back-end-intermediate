@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-
 const configs = require('../../../common/utils/configs');
 
 // VsCode-JSDoc purpose
 const Hapi = require('@hapi/hapi');
+const AlbumLikesService = require('../../services/db/AlbumLikesService');
 const AlbumsService = require('../../services/db/AlbumsService');
 const StorageService = require('../../services/storage/StorageService');
 const Validator = require('../../validators/albums');
@@ -14,16 +14,23 @@ const Validator = require('../../validators/albums');
 class AlbumsHandler {
   #albumsService;
   #storageService;
+  #albumLikesService;
   #validator;
 
   /**
-   * @param {AlbumsService} albumsService
-   * @param {StorageService} storageService
-   * @param {Validator} validator
+   * @param {object} utils
+   * @param {AlbumsService} utils.albumsService
+   * @param {StorageService} utils.storageService
+   * @param {AlbumLikesService} utils.albumLikesService
+   * @param {Validator} utils.validator
    */
-  constructor(albumsService, storageService, validator) {
+  constructor({
+    albumsService, storageService, albumLikesService,
+    validator,
+  }) {
     this.#albumsService = albumsService;
     this.#storageService = storageService;
+    this.#albumLikesService = albumLikesService;
     this.#validator = validator;
   }
 
@@ -140,6 +147,58 @@ class AlbumsHandler {
     response.code(201);
 
     return response;
+  }
+
+  /**
+   * Handler for `POST /albums/{id}/likes` request.
+   *
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
+   *
+   * @throws {ClientError}
+   * @return {Promise<Hapi.ResponseObject>}
+   */
+  async postAlbumLike(req, h) {
+    const {id} = req.params;
+    const {id: authId} = req.auth.credentials;
+
+    await this.#albumsService.getAlbumById(id); // Check if album exist
+
+    const isAlbumLiked = await this.#albumLikesService.isAlbumLiked(id, authId);
+
+    if (isAlbumLiked) {
+      await this.#albumLikesService.dislikeAnAlbum(id, authId);
+    } else {
+      await this.#albumLikesService.likeAnAlbum(id, authId);
+    }
+
+    const response = h.response({
+      status: 'success',
+      message: `Album ${isAlbumLiked ? 'disliked' : 'liked'}`,
+    });
+    response.code(201);
+
+    return response;
+  }
+
+  /**
+   * Handler for `GET /albums/{id}/likes` request.
+   *
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
+   *
+   * @throws {ClientError}
+   * @return {Promise<Hapi.ResponseObject>}
+   */
+  async getAlbumLikes(req, h) {
+    const {id} = req.params;
+
+    const likes = await this.#albumLikesService.albumLikesCount(id);
+
+    return {
+      status: 'success',
+      data: {likes},
+    };
   }
 }
 

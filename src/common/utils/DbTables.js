@@ -15,6 +15,7 @@ class DbTables {
     }
   }
 
+  static albumLikes = 'album_likes';
   static albums = 'albums';
   static authentications = 'authentications';
   static collaborations = 'collaborations';

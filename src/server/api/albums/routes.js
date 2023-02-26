@@ -6,6 +6,7 @@ const PATH_ALBUMS = '/albums';
 // VsCode-JSDoc purpose
 const Hapi = require('@hapi/hapi');
 const AlbumsHandler = require('./handler');
+const {userIdAuthStrategy} = require('../../../common/constants');
 
 /**
  * Function to return routes for `/albums` endpoint.
@@ -49,6 +50,15 @@ const routes = (handler) => [
         path: path.resolve(__dirname, 'fs'),
       },
     },
+  },
+  {
+    method: 'POST', path: `${PATH_ALBUMS}/{id}/likes`,
+    handler: (req, h) => handler.postAlbumLike(req, h),
+    options: {auth: userIdAuthStrategy},
+  },
+  {
+    method: 'GET', path: `${PATH_ALBUMS}/{id}/likes`,
+    handler: (req, h) => handler.getAlbumLikes(req, h),
   },
 ];
 

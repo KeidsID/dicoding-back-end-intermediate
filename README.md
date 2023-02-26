@@ -119,7 +119,7 @@ Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.j
 
 - [x] Export playlist feature. MQ Consumer: [dicoding-back-end-intermediate-mq-consumer][my-consumer]
 - [x] Upload album cover feature.
-- [ ] Like and Unlike albums feature.
+- [x] Like and Unlike albums feature.
 - [ ] Server-Side cache.
 - [x] Keep features from API.v2.
 

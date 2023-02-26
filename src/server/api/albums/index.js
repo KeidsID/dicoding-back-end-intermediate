@@ -11,17 +11,18 @@ const Validator = require('../../validators/albums');
  */
 module.exports = {
   name: 'albums',
-  version: '1.1.0',
+  version: '1.2.0',
   /**
    * @param {Hapi.Server} server
    *
    * @param {object} options - The options for this plugin.
    * @param {AlbumsService} options.albumsService
    * @param {StorageService} options.storageService
+   * @param {AlbumLikesService} options.albumLikesService
    * @param {Validator} options.validator
    */
-  register: async (server, {albumsService, storageService, validator}) => {
-    const handler = new AlbumsHandler(albumsService, storageService, validator);
+  register: async (server, options) => {
+    const handler = new AlbumsHandler(options);
 
     server.route(routes(handler));
   },

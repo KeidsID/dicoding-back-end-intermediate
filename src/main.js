@@ -7,6 +7,7 @@ const configuredServer = require('./server/config/configuredServer');
 // "albums" endpoint envs
 const albumsPlugin = require('./server/api/albums');
 const AlbumsService = require('./server/services/db/AlbumsService');
+const AlbumLikesService = require('./server/services/db/AlbumLikesService');
 const AlbumsValidator = require('./server/validators/albums');
 
 // "authentications" endpoint envs
@@ -58,6 +59,7 @@ const main = async () => {
   const albumStorageService = new StorageService(
       path.resolve(__dirname, 'server/api/albums/fs/covers'),
   );
+  const albumLikesService = new AlbumLikesService();
 
   const playlistsService = new PlaylistsService(collaborationsService);
   const playlistSongsService = new PlaylistSongsService(songsService);
@@ -95,6 +97,7 @@ const main = async () => {
       plugin: albumsPlugin, options: {
         albumsService,
         storageService: albumStorageService,
+        albumLikesService,
         validator: AlbumsValidator,
       },
     },

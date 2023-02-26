@@ -1,35 +1,38 @@
+/* eslint-disable no-unused-vars */
 // For VsCode-JSDoc purpose.
-// eslint-disable-next-line no-unused-vars
-const SongsService = require('../../services/SongsService');
-// eslint-disable-next-line no-unused-vars
+const Hapi = require('@hapi/hapi');
+const SongsService = require('../../services/db/SongsService');
 const Validator = require('../../validators/songs');
 
 /**
  * Request handlers for `/songs` endpoint.
  */
 class SongsHandler {
+  #service;
+  #validator;
+
   /**
    * @param {SongsService} service
    * @param {Validator} validator
    */
   constructor(service, validator) {
-    this._service = service;
-    this._validator = validator;
+    this.#service = service;
+    this.#validator = validator;
   }
 
   /**
    * Handler for `POST /songs` request.
    *
-   * @param {object} req - The Hapi request object.
-   * @param {object} h - The Hapi response toolkit.
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
    *
    * @throws {InvariantError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async postSong(req, h) {
-    this._validator.validatePayload(req.payload);
+    this.#validator.validatePayload(req.payload);
 
-    const songId = await this._service.addSong(req.payload);
+    const songId = await this.#service.addSong(req.payload);
 
     const response = h.response({
       status: 'success',
@@ -43,13 +46,13 @@ class SongsHandler {
   /**
    * Handler for `GET /songs` request.
    *
-   * @param {object} req - The Hapi request object.
+   * @param {Hapi.Request} req
    *
    * @throws {NotFoundError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async getSongs(req) {
-    const songs = await this._service.getSongs(req.query);
+    const songs = await this.#service.getSongs(req.query);
 
     return {
       status: 'success',
@@ -60,15 +63,15 @@ class SongsHandler {
   /**
    * Handler for `GET /songs/{id}` request.
    *
-   * @param {object} req - The Hapi request object.
+   * @param {Hapi.Request} req
    *
    * @throws {NotFoundError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async getSongById(req) {
     const {id} = req.params;
 
-    const song = await this._service.getSongById(id);
+    const song = await this.#service.getSongById(id);
 
     return {
       status: 'success',
@@ -79,18 +82,18 @@ class SongsHandler {
   /**
    * Handler for `PUT /songs/{id}` request.
    *
-   * @param {object} req - The Hapi request object.
-   * @param {object} h - The Hapi response toolkit.
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async putSongById(req) {
-    this._validator.validatePayload(req.payload);
+    this.#validator.validatePayload(req.payload);
 
     const {id} = req.params;
 
-    await this._service.editSongById(id, req.payload);
+    await this.#service.editSongById(id, req.payload);
 
     return {
       status: 'success',
@@ -101,15 +104,15 @@ class SongsHandler {
   /**
    * Handler for `DELETE /songs/{id}` request.
    *
-   * @param {object} req - The Hapi request object.
+   * @param {Hapi.Request} req
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async deleteSongById(req) {
     const {id} = req.params;
 
-    await this._service.deleteSongById(id);
+    await this.#service.deleteSongById(id);
 
     return {
       status: 'success',

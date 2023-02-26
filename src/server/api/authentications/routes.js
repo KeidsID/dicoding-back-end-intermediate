@@ -1,14 +1,16 @@
 /* eslint-disable no-unused-vars */
-// For VsCode-JSDoc purpose
-const AuthenticationsHandler = require('./handler');
 
 const PATH_AUTHENTICATIONS = '/authentications';
+
+// For VsCode-JSDoc purpose
+const Hapi = require('@hapi/hapi');
+const AuthenticationsHandler = require('./handler');
 
 /**
  * Function to return routes for `/authentications` endpoint.
  *
  * @param {AuthenticationsHandler} handler
- * @return {object[]} The routes for server.
+ * @return {Hapi.ServerRoute[]} The routes for server.
  */
 const routes = (handler) => [
   {

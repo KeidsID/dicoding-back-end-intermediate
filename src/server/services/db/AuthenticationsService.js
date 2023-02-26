@@ -1,16 +1,19 @@
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const DbTables = require('../../../common/utils/DbTables');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
 
 /**
  * CRUD Service for "authentications" table from Database.
  */
 class AuthenticationsService {
+  #pool;
+
   /**
    */
   constructor() {
-    this._pool = new Pool();
+    this.#pool = new Pool();
   }
 
   /**
@@ -23,7 +26,7 @@ class AuthenticationsService {
       text: `INSERT INTO ${DbTables.authentications} VALUES ($1)`,
       values: [token],
     };
-    await this._pool.query(query);
+    await this.#pool.query(query);
   }
 
 
@@ -39,7 +42,7 @@ class AuthenticationsService {
       text: `SELECT * FROM ${DbTables.authentications} WHERE token = $1`,
       values: [token],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new InvariantError('Invalid Token');
@@ -56,7 +59,7 @@ class AuthenticationsService {
       text: `DELETE FROM ${DbTables.authentications} WHERE token = $1`,
       values: [token],
     };
-    await this._pool.query(query);
+    await this.#pool.query(query);
   }
 }
 

@@ -3,8 +3,7 @@ const AuthenticationsHandler = require('./handler');
 const routes = require('./routes');
 
 // VsCode-JsDoc purpose
-const AuthenticationsService = require('../../services/AuthenticationsService');
-const UsersService = require('../../services/UsersService');
+const Hapi = require('@hapi/hapi');
 const TokenManager = require('../../tokenize/TokenManager');
 const Validator = require('../../validators/authentications');
 
@@ -15,7 +14,7 @@ module.exports = {
   name: 'authentications',
   version: '1.0.0',
   /**
-   * @param {object} server - The Hapi Server.
+   * @param {Hapi.Server} server - The Hapi Server.
    *
    * @param {object} options - The options for this plugin.
    * @param {AuthenticationsService} options.authenticationsService

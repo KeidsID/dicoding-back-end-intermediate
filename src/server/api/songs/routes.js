@@ -2,13 +2,14 @@
 const PATH_SONGS = '/songs';
 
 // VsCode-JSDoc purpose
+const Hapi = require('@hapi/hapi');
 const SongsHandler = require('./handler');
 
 /**
  * Function to return routes for `/songs` endpoint.
  *
  * @param {SongsHandler} handler
- * @return {Array<object>} The routes for server.
+ * @return {Hapi.ServerRoute[]} The routes for server.
  */
 const routes = (handler) => [
   {

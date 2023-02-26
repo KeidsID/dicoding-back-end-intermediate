@@ -3,7 +3,7 @@ const AlbumsHandler = require('./handler');
 const routes = require('./routes');
 
 // VsCode-JSDoc purpose
-const AlbumsService = require('../../services/AlbumsService');
+const Hapi = require('@hapi/hapi');
 const Validator = require('../../validators/albums');
 
 /**
@@ -11,16 +11,19 @@ const Validator = require('../../validators/albums');
  */
 module.exports = {
   name: 'albums',
-  version: '1.0.1',
+  version: '1.3.0',
   /**
-   * @param {object} server - The Hapi Server.
+   * @param {Hapi.Server} server
    *
    * @param {object} options - The options for this plugin.
-   * @param {AlbumsService} options.service
+   * @param {AlbumsService} options.albumsService
+   * @param {StorageService} options.storageService
+   * @param {AlbumLikesService} options.albumLikesService
+   * @param {CacheService} options.cacheService
    * @param {Validator} options.validator
    */
-  register: async (server, {service, validator}) => {
-    const handler = new AlbumsHandler(service, validator);
+  register: async (server, options) => {
+    const handler = new AlbumsHandler(options);
 
     server.route(routes(handler));
   },

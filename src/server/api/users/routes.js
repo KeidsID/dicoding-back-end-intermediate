@@ -1,14 +1,15 @@
 /* eslint-disable no-unused-vars */
-// For VsCode-JSDoc purpose
-const SongsHandler = require('./handler');
-
 const PATH_USERS = '/users';
+
+// For VsCode-JSDoc purpose
+const Hapi = require('@hapi/hapi');
+const SongsHandler = require('./handler');
 
 /**
  * Function to return routes for `/users` endpoint.
  *
  * @param {SongsHandler} handler
- * @return {object[]} The routes for server.
+ * @return {Hapi.ServerRoute[]}
  */
 const routes = (handler) => [
   {

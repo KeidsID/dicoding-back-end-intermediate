@@ -3,6 +3,7 @@ const CollaboraionsHandler = require('./handler');
 const routes = require('./routes');
 
 // VsCode-JsDoc purpose
+const Hapi = require('@hapi/hapi');
 const Validator = require('../../validators/collaborations');
 
 /**
@@ -12,7 +13,7 @@ module.exports = {
   name: 'collaborations',
   version: '1.0.0',
   /**
-   * @param {object} server - Hapi.Server
+   * @param {Hapi.Server} server - Hapi.Server
    *
    * @param {object} options
    * @param {CollaboraionsService} options.collaborationsService

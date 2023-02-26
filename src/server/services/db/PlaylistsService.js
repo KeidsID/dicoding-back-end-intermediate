@@ -2,11 +2,13 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
+const DbTables = require('../../../common/utils/DbTables');
 const AuthorizationError = require(
-    '../../common/errors/subClasses/AuthorizationError');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
-const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
+    '../../../common/errors/subClasses/AuthorizationError');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
+const NotFoundError = require(
+    '../../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const CollaborationsService = require('./CollaborationsService');
@@ -15,12 +17,15 @@ const CollaborationsService = require('./CollaborationsService');
  * CRUD Service for "playlists" table from Database.
  */
 class PlaylistsService {
+  #pool;
+  #collabsService;
+
   /**
    * @param {CollaborationsService} collaborationsService
    */
   constructor(collaborationsService) {
-    this._pool = new Pool();
-    this._collaborationsService = collaborationsService;
+    this.#pool = new Pool();
+    this.#collabsService = collaborationsService;
   }
 
   /**
@@ -42,13 +47,13 @@ class PlaylistsService {
       ) RETURNING id`,
       values: [id, name, owner],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new InvariantError('Failed to add playlist');
     }
 
-    await this._collaborationsService.addCollab({
+    await this.#collabsService.addCollab({
       playlistId: id, userId: owner,
     });
 
@@ -56,13 +61,13 @@ class PlaylistsService {
   }
 
   /**
-   * Get list of playlists based on owner from Database.
+   * Get list of playlists based on user id from Database.
    *
-   * @param {string} owner
+   * @param {string} userId
    *
    * @return {Promise<object[]>} Array of Playlist
    */
-  async getPlaylists(owner) {
+  async getPlaylists(userId) {
     const query = {
       text: `
         SELECT 
@@ -78,9 +83,9 @@ class PlaylistsService {
           ${DbTables.collaborations}.user_id = $1
         GROUP BY ${DbTables.playlists}.id, ${DbTables.users}.username
       `,
-      values: [owner],
+      values: [userId],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     return rows;
   }
@@ -106,7 +111,7 @@ class PlaylistsService {
       `,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new NotFoundError('Playlist Not Found');
@@ -127,7 +132,7 @@ class PlaylistsService {
       text: `DELETE FROM ${DbTables.playlists} WHERE id = $1 RETURNING id`,
       values: [id],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError(
@@ -149,7 +154,7 @@ class PlaylistsService {
       text: `SELECT owner FROM ${DbTables.playlists} WHERE id = $1`,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new NotFoundError('Playlist Not Found');
@@ -177,7 +182,7 @@ class PlaylistsService {
       }
     }
 
-    await this._collaborationsService.verifyCollab(id, userId);
+    await this.#collabsService.verifyCollab(id, userId);
   }
 }
 

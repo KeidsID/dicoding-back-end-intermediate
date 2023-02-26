@@ -1,15 +1,21 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
-const PlaylistsService = require('../../services/PlaylistsService');
-const PlaylistSongsService = require('../../services/PlaylistSongsService');
+const Hapi = require('@hapi/hapi');
+const PlaylistsService = require('../../services/db/PlaylistsService');
+const PlaylistSongsService = require('../../services/db/PlaylistSongsService');
 const PlaylistSongActivitiesService = require(
-    '../../services/PlaylistSongActivitiesService');
+    '../../services/db/PlaylistSongActivitiesService');
 const validator = require('../../validators/playlists');
 
 /**
  * Request handlers for `/playlists` endpoint.
  */
 class PlaylistsHandler {
+  #playlistsService;
+  #playlistSongsService;
+  #playlistSongActivitiesService;
+  #validator;
+
   /**
    * @param {object} utils
    * @param {PlaylistsService} utils.playlistsService
@@ -21,27 +27,27 @@ class PlaylistsHandler {
     playlistsService, playlistSongsService,
     playlistSongActivitiesService, validator,
   }) {
-    this._playlistsService = playlistsService;
-    this._playlistSongsService = playlistSongsService;
-    this._playlistSongActivitiesService = playlistSongActivitiesService;
-    this._validator = validator;
+    this.#playlistsService = playlistsService;
+    this.#playlistSongsService = playlistSongsService;
+    this.#playlistSongActivitiesService = playlistSongActivitiesService;
+    this.#validator = validator;
   }
 
   /**
    * Handler for `POST /playlists` request.
    *
-   * @param {object} req - Client Request object
-   * @param {object} h - Hapi Response Toolkit
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async postPlaylist(req, h) {
-    this._validator.validatePostPlaylistPayload(req.payload);
+    this.#validator.validatePostPlaylistPayload(req.payload);
 
     const {id: authId} = req.auth.credentials;
 
-    const playlistId = await this._playlistsService.addPlaylist(
+    const playlistId = await this.#playlistsService.addPlaylist(
         authId, req.payload,
     );
 
@@ -57,14 +63,14 @@ class PlaylistsHandler {
   /**
    * Handler for `GET /playlists` request.
    *
-   * @param {object} req - Client Request object
+   * @param {Hapi.Request} req
    *
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async getPlaylists(req) {
     const {id: authId} = req.auth.credentials;
 
-    const playlists = await this._playlistsService.getPlaylists(authId);
+    const playlists = await this.#playlistsService.getPlaylists(authId);
 
     return {
       status: 'success',
@@ -75,17 +81,17 @@ class PlaylistsHandler {
   /**
    * Handler for `DELETE /playlists/{id}` request.
    *
-   * @param {object} req - Client Request object
+   * @param {Hapi.Request} req
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async deletePlaylistById(req) {
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
 
-    await this._playlistsService.verifyPlaylistOwner(id, authId);
-    await this._playlistsService.deletePlaylist(id);
+    await this.#playlistsService.verifyPlaylistOwner(id, authId);
+    await this.#playlistsService.deletePlaylist(id);
 
     return {
       status: 'success',
@@ -96,22 +102,22 @@ class PlaylistsHandler {
   /**
    * Handler for `POST /playlists/{id}/songs` request.
    *
-   * @param {object} req - Client Request object
-   * @param {object} h - Hapi Response Toolkit
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async postSongToPlaylist(req, h) {
-    this._validator.validatePostPlaylistsSongsPayload(req.payload);
+    this.#validator.validatePostPlaylistsSongsPayload(req.payload);
 
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
     const {songId} = req.payload;
 
-    await this._playlistsService.verifyPlaylistAccess(id, authId);
-    await this._playlistSongsService.addSongToPlaylist(id, req.payload);
-    await this._playlistSongActivitiesService.recordAddSong(id, authId, songId);
+    await this.#playlistsService.verifyPlaylistAccess(id, authId);
+    await this.#playlistSongsService.addSongToPlaylist(id, req.payload);
+    await this.#playlistSongActivitiesService.recordAddSong(id, authId, songId);
 
     const response = h.response({
       status: 'success',
@@ -125,19 +131,19 @@ class PlaylistsHandler {
   /**
    * Handler for `GET /playlists/{id}/songs` request.
    *
-   * @param {object} req - Client Request object
+   * @param {Hapi.Request} req
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async getSongsFromPlaylists(req) {
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
 
-    await this._playlistsService.verifyPlaylistAccess(id, authId);
+    await this.#playlistsService.verifyPlaylistAccess(id, authId);
 
-    const playlist = await this._playlistsService.getPlaylistById(id);
-    playlist['songs'] = await this._playlistSongsService
+    const playlist = await this.#playlistsService.getPlaylistById(id);
+    playlist['songs'] = await this.#playlistSongsService
         .getSongsFromPlaylist(id);
 
     return {
@@ -149,21 +155,21 @@ class PlaylistsHandler {
   /**
    * Handler for `DELETE /playlists/{id}/songs` request.
    *
-   * @param {object} req - Client Request object
+   * @param {Hapi.Request} req
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async deleteSongFromPlaylists(req) {
-    this._validator.validateDeletePlaylistsSongsPayload(req.payload);
+    this.#validator.validateDeletePlaylistsSongsPayload(req.payload);
 
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
     const {songId} = req.payload;
 
-    await this._playlistsService.verifyPlaylistAccess(id, authId);
-    await this._playlistSongsService.deleteSongFromPlaylist(id, req.payload);
-    await this._playlistSongActivitiesService.recordDeleteSong(
+    await this.#playlistsService.verifyPlaylistAccess(id, authId);
+    await this.#playlistSongsService.deleteSongFromPlaylist(id, req.payload);
+    await this.#playlistSongActivitiesService.recordDeleteSong(
         id, authId, songId,
     );
 
@@ -176,18 +182,18 @@ class PlaylistsHandler {
   /**
    * Handler for `GET /playlists/{id}/activities` request.
    *
-   * @param {object} req - Client Request object
+   * @param {Hapi.Request} req
    *
    * @throws {ClientError}
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async getPlaylistSongActivities(req) {
     const {id: authId} = req.auth.credentials;
     const {id} = req.params;
 
-    await this._playlistsService.verifyPlaylistAccess(id, authId);
+    await this.#playlistsService.verifyPlaylistAccess(id, authId);
 
-    const activities = await this._playlistSongActivitiesService
+    const activities = await this.#playlistSongActivitiesService
         .getPlaylistActivities(id);
 
     return {

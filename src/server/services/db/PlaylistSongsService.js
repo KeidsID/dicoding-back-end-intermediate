@@ -2,9 +2,11 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
-const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
+const DbTables = require('../../../common/utils/DbTables');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
+const NotFoundError = require(
+    '../../../common/errors/subClasses/NotFoundError');
 
 // VsCode-JsDoc purpose
 const SongsService = require('./SongsService');
@@ -16,12 +18,15 @@ const SongsService = require('./SongsService');
  * and "songs" table.
  */
 class PlaylistSongsService {
+  #pool;
+  #songsService;
+
   /**
    * @param {SongsService} songsService
    */
   constructor(songsService) {
-    this._pool = new Pool();
-    this._songsService = songsService;
+    this.#pool = new Pool();
+    this.#songsService = songsService;
   }
 
   /**
@@ -34,7 +39,7 @@ class PlaylistSongsService {
    * @throws {ClientError}
    */
   async addSongToPlaylist(id, {songId}) {
-    await this._songsService.verifySong(songId);
+    await this.#songsService.verifySong(songId);
 
     const relationId = `playlistSong-${nanoid(16)}`;
 
@@ -44,7 +49,7 @@ class PlaylistSongsService {
       ) RETURNING id`,
       values: [relationId, id, songId],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new InvariantError('Failed to add song into playlist');
@@ -72,7 +77,7 @@ class PlaylistSongsService {
       `,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     return rows;
   }
@@ -87,7 +92,7 @@ class PlaylistSongsService {
    * @throws {NotFoundError}
    */
   async deleteSongFromPlaylist(id, {songId}) {
-    await this._songsService.verifySong(songId);
+    await this.#songsService.verifySong(songId);
 
     const query = {
       text: `
@@ -96,7 +101,7 @@ class PlaylistSongsService {
       `,
       values: [id, songId],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new NotFoundError(

@@ -1,14 +1,18 @@
 /* eslint-disable no-unused-vars */
+const path = require('path');
+
 const PATH_ALBUMS = '/albums';
 
 // VsCode-JSDoc purpose
+const Hapi = require('@hapi/hapi');
 const AlbumsHandler = require('./handler');
+const {userIdAuthStrategy} = require('../../../common/constants');
 
 /**
  * Function to return routes for `/albums` endpoint.
  *
  * @param {AlbumsHandler} handler
- * @return {Array<object>} The routes for server.
+ * @return {Hapi.ServerRoute[]} The routes for server.
  */
 const routes = (handler) => [
   {
@@ -26,6 +30,35 @@ const routes = (handler) => [
   {
     method: 'DELETE', path: `${PATH_ALBUMS}/{id}`,
     handler: (req) => handler.deleteAlbumById(req),
+  },
+  {
+    method: 'POST', path: `${PATH_ALBUMS}/{id}/covers`,
+    handler: (req, h) => handler.postAlbumCover(req, h),
+    options: {
+      payload: {
+        allow: 'multipart/form-data',
+        multipart: true,
+        output: 'stream',
+        maxBytes: 512000,
+      },
+    },
+  },
+  {
+    method: 'GET', path: `${PATH_ALBUMS}/{param*}`,
+    handler: {
+      directory: {
+        path: path.resolve(__dirname, 'fs'),
+      },
+    },
+  },
+  {
+    method: 'POST', path: `${PATH_ALBUMS}/{id}/likes`,
+    handler: (req, h) => handler.postAlbumLike(req, h),
+    options: {auth: userIdAuthStrategy},
+  },
+  {
+    method: 'GET', path: `${PATH_ALBUMS}/{id}/likes`,
+    handler: (req, h) => handler.getAlbumLikes(req, h),
   },
 ];
 

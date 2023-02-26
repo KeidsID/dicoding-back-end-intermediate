@@ -1,51 +1,52 @@
 /* eslint-disable no-unused-vars */
-// For VsCode-JSDoc purpose
-const {playlistAuthStrategy} = require('../../../common/constants');
-const PlaylistsHandler = require('./handler');
-
 const PATH_PLAYLISTS = '/playlists';
+
+// For VsCode-JSDoc purpose
+const Hapi = require('@hapi/hapi');
+const {userIdAuthStrategy} = require('../../../common/constants');
+const PlaylistsHandler = require('./handler');
 
 /**
  * Function to return routes for `/playlists` endpoint.
  *
  * @param {PlaylistsHandler} handler
- * @return {object[]} The routes for server.
+ * @return {Hapi.ServerRoute[]} The routes for server.
  */
 const routes = (handler) => [
   {
     method: 'POST', path: PATH_PLAYLISTS,
     handler: (req, h) => handler.postPlaylist(req, h),
-    options: {auth: playlistAuthStrategy},
+    options: {auth: userIdAuthStrategy},
   },
   {
     method: 'GET', path: PATH_PLAYLISTS,
     handler: (req) => handler.getPlaylists(req),
-    options: {auth: playlistAuthStrategy},
+    options: {auth: userIdAuthStrategy},
   },
   {
     method: 'DELETE', path: `${PATH_PLAYLISTS}/{id}`,
     handler: (req) => handler.deletePlaylistById(req),
-    options: {auth: playlistAuthStrategy},
+    options: {auth: userIdAuthStrategy},
   },
   {
     method: 'POST', path: `${PATH_PLAYLISTS}/{id}/songs`,
     handler: (req, h) => handler.postSongToPlaylist(req, h),
-    options: {auth: playlistAuthStrategy},
+    options: {auth: userIdAuthStrategy},
   },
   {
     method: 'GET', path: `${PATH_PLAYLISTS}/{id}/songs`,
     handler: (req) => handler.getSongsFromPlaylists(req),
-    options: {auth: playlistAuthStrategy},
+    options: {auth: userIdAuthStrategy},
   },
   {
     method: 'DELETE', path: `${PATH_PLAYLISTS}/{id}/songs`,
     handler: (req) => handler.deleteSongFromPlaylists(req),
-    options: {auth: playlistAuthStrategy},
+    options: {auth: userIdAuthStrategy},
   },
   {
     method: 'GET', path: `${PATH_PLAYLISTS}/{id}/activities`,
     handler: (req) => handler.getPlaylistSongActivities(req),
-    options: {auth: playlistAuthStrategy},
+    options: {auth: userIdAuthStrategy},
   },
 ];
 

@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 // VsCode-JsDoc purpose
-const AuthenticationsService = require('../../services/AuthenticationsService');
-const UsersService = require('../../services/UsersService');
+const Hapi = require('@hapi/hapi');
+const AuthenticationsService = require(
+    '../../services/db/AuthenticationsService');
+const UsersService = require('../../services/db/UsersService');
 const TokenManager = require('../../tokenize/TokenManager');
 const Validator = require('../../validators/authentications');
 
@@ -9,6 +11,11 @@ const Validator = require('../../validators/authentications');
  * Request handlers for `/authentications` endpoint.
  */
 class AuthenticationsHandler {
+  #authService;
+  #usersService;
+  #tokenManager;
+  #validator;
+
   /**
    * @param {object} utils
    * @param {AuthenticationsService} utils.authenticationsService
@@ -20,28 +27,28 @@ class AuthenticationsHandler {
     authenticationsService, usersService,
     tokenManager, validator,
   }) {
-    this._authenticationsService = authenticationsService;
-    this._usersService = usersService;
-    this._tokenManager = tokenManager;
-    this._validator = validator;
+    this.#authService = authenticationsService;
+    this.#usersService = usersService;
+    this.#tokenManager = tokenManager;
+    this.#validator = validator;
   }
 
   /**
    * Handler for `POST /authentications` request.
    *
-   * @param {object} req - Client Request object
-   * @param {object} h - Hapi Response Toolkit
+   * @param {Hapi.Request} req
+   * @param {Hapi.ResponseToolkit} h
    *
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async postAuth(req, h) {
-    this._validator.validatePostPayload(req.payload);
+    this.#validator.validatePostPayload(req.payload);
 
-    const id = await this._usersService.verifyCredential(req.payload);
-    const accessToken = this._tokenManager.generateAccessToken({id});
-    const refreshToken = this._tokenManager.generateRefreshToken({id});
+    const id = await this.#usersService.verifyCredential(req.payload);
+    const accessToken = this.#tokenManager.generateAccessToken({id});
+    const refreshToken = this.#tokenManager.generateRefreshToken({id});
 
-    await this._authenticationsService.addToken(refreshToken);
+    await this.#authService.addToken(refreshToken);
 
     const response = h.response({
       status: 'success',
@@ -58,19 +65,19 @@ class AuthenticationsHandler {
   /**
    * Handler for `PUT /authentications` request.
    *
-   * @param {object} req - Client Request object
+   * @param {Hapi.Request} req
    *
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async putAuth(req) {
-    this._validator.validatePutPayload(req.payload);
+    this.#validator.validatePutPayload(req.payload);
 
     const {refreshToken} = req.payload;
 
-    await this._authenticationsService.verifyToken(refreshToken);
+    await this.#authService.verifyToken(refreshToken);
 
-    const tokenPayload = this._tokenManager.verifyRefreshToken(refreshToken);
-    const accessToken = this._tokenManager.generateAccessToken(tokenPayload);
+    const tokenPayload = this.#tokenManager.verifyRefreshToken(refreshToken);
+    const accessToken = this.#tokenManager.generateAccessToken(tokenPayload);
 
     return {
       status: 'success',
@@ -83,17 +90,17 @@ class AuthenticationsHandler {
   /**
    * Handler for `DELETE /authentications` request.
    *
-   * @param {object} req - Client Request object
+   * @param {Hapi.Request} req
    *
-   * @return {Promise<object>} Server Response
+   * @return {Promise<Hapi.ResponseObject>}
    */
   async deleteAuth(req) {
-    this._validator.validateDeletePayload(req.payload);
+    this.#validator.validateDeletePayload(req.payload);
 
     const {refreshToken} = req.payload;
 
-    await this._authenticationsService.verifyToken(refreshToken);
-    await this._authenticationsService.deleteToken(refreshToken);
+    await this.#authService.verifyToken(refreshToken);
+    await this.#authService.deleteToken(refreshToken);
 
     return {
       status: 'success',

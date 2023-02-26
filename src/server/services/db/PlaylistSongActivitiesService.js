@@ -1,8 +1,9 @@
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
+const DbTables = require('../../../common/utils/DbTables');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
 
 /**
  * CRUD Service for "playlist_song_activities" table from Database.
@@ -10,10 +11,12 @@ const InvariantError = require('../../common/errors/subClasses/InvariantError');
  * This table reference the "playlists" table.
  */
 class PlaylistSongActivitiesService {
+  #pool;
+
   /**
    */
   constructor() {
-    this._pool = new Pool();
+    this.#pool = new Pool();
   }
 
   /**
@@ -34,7 +37,7 @@ class PlaylistSongActivitiesService {
       ) RETURNING id`,
       values: [id, playlistId, userId, songId],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new InvariantError('Failed to record the activity');
@@ -59,7 +62,7 @@ class PlaylistSongActivitiesService {
       ) RETURNING id`,
       values: [id, playlistId, userId, songId],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (!rowCount) {
       throw new InvariantError('Failed to record the activity');
@@ -71,7 +74,7 @@ class PlaylistSongActivitiesService {
    *
    * @param {string} id - Playlist id
    *
-   * @return {Promise<object[]>} - Array of Activities
+   * @return {Promise<object[]>} Array of Activities
    */
   async getPlaylistActivities(id) {
     const query = {
@@ -94,7 +97,7 @@ class PlaylistSongActivitiesService {
       `,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     return rows;
   }

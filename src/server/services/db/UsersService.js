@@ -2,20 +2,24 @@ const bcrypt = require('bcrypt');
 const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 
-const DbTables = require('../../common/utils/DbTables');
+const DbTables = require('../../../common/utils/DbTables');
 const AuthenticationError = require(
-    '../../common/errors/subClasses/AuthenticationError');
-const InvariantError = require('../../common/errors/subClasses/InvariantError');
-const NotFoundError = require('../../common/errors/subClasses/NotFoundError');
+    '../../../common/errors/subClasses/AuthenticationError');
+const InvariantError = require(
+    '../../../common/errors/subClasses/InvariantError');
+const NotFoundError = require(
+    '../../../common/errors/subClasses/NotFoundError');
 
 /**
  * CRUD Service for "users" table from Database
  */
 class UsersService {
+  #pool;
+
   /**
    */
   constructor() {
-    this._pool = new Pool();
+    this.#pool = new Pool();
   }
 
   /**
@@ -43,7 +47,7 @@ class UsersService {
       `,
       values: [id, username, hashedPassword, fullname],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new InvariantError('Fail to Add User');
@@ -68,7 +72,7 @@ class UsersService {
       `,
       values: [id],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new NotFoundError('User Not Found');
@@ -89,7 +93,7 @@ class UsersService {
       text: `SELECT id FROM ${DbTables.users} WHERE username = $1`,
       values: [username],
     };
-    const {rowCount} = await this._pool.query(query);
+    const {rowCount} = await this.#pool.query(query);
 
     if (rowCount) {
       throw new InvariantError('Username already in use');
@@ -114,7 +118,7 @@ class UsersService {
       `,
       values: [username],
     };
-    const {rows} = await this._pool.query(query);
+    const {rows} = await this.#pool.query(query);
 
     if (!rows.length) {
       throw new AuthenticationError('Username not Found');

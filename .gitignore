@@ -1,3 +1,7 @@
-node_modules/
+# misc.
+node_modules
 *.env
 *.pem
+
+# local file storage
+src/server/api/albums/fs

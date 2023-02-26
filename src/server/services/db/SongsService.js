@@ -85,7 +85,13 @@ class SongsService {
    * @param {string} albumId
    *
    * @throws {NotFoundError}
-   * @return {Promise<object[]>}
+   *
+   * @typedef {object} Song
+   * @property {string} id
+   * @property {string} title
+   * @property {string} performer
+   *
+   * @return {Promise<Song[]>}
    */
   async getSongsByAlbumId(albumId) {
     const query = {

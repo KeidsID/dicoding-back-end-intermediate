@@ -1,5 +1,6 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
 
 const configs = require('../../common/utils/configs');
 const {userIdAuthStrategy} = require('../../common/constants');
@@ -18,6 +19,7 @@ const configuredServer = async () => {
 
   await server.register([
     {plugin: Jwt},
+    {plugin: Inert},
   ]);
 
   server.auth.strategy(userIdAuthStrategy, 'jwt', {

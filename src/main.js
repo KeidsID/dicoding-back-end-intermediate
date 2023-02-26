@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const path = require('path');
+
 const configuredServer = require('./server/config/configuredServer');
 
 // "albums" endpoint envs
@@ -44,6 +46,8 @@ const exportsPlugin = require('./server/api/exports');
 const producerService = require('./server/services/mq/ProducerService');
 const ExportsValidator = require('./server/validators/exports');
 
+const StorageService = require('./server/services/storage/StorageService');
+
 const main = async () => {
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
@@ -51,10 +55,14 @@ const main = async () => {
 
   const songsService = new SongsService();
   const albumsService = new AlbumsService(songsService);
+  const albumStorageService = new StorageService(
+      path.resolve(__dirname, 'server/api/albums/fs/covers'),
+  );
 
   const playlistsService = new PlaylistsService(collaborationsService);
   const playlistSongsService = new PlaylistSongsService(songsService);
   const playlistSongActivitiesService = new PlaylistSongActivitiesService();
+
 
   const server = await configuredServer();
 
@@ -85,7 +93,8 @@ const main = async () => {
     },
     {
       plugin: albumsPlugin, options: {
-        service: albumsService,
+        albumsService,
+        storageService: albumStorageService,
         validator: AlbumsValidator,
       },
     },

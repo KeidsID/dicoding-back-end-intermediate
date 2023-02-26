@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+const path = require('path');
+
 const PATH_ALBUMS = '/albums';
 
 // VsCode-JSDoc purpose
@@ -27,6 +29,26 @@ const routes = (handler) => [
   {
     method: 'DELETE', path: `${PATH_ALBUMS}/{id}`,
     handler: (req) => handler.deleteAlbumById(req),
+  },
+  {
+    method: 'POST', path: `${PATH_ALBUMS}/{id}/covers`,
+    handler: (req, h) => handler.postAlbumCover(req, h),
+    options: {
+      payload: {
+        allow: 'multipart/form-data',
+        multipart: true,
+        output: 'stream',
+        maxBytes: 512000,
+      },
+    },
+  },
+  {
+    method: 'GET', path: `${PATH_ALBUMS}/{param*}`,
+    handler: {
+      directory: {
+        path: path.resolve(__dirname, 'fs'),
+      },
+    },
   },
 ];
 

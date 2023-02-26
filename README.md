@@ -118,7 +118,7 @@ Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.j
 ## Mandatory Tasks
 
 - [x] Export playlist feature. MQ Consumer: [dicoding-back-end-intermediate-mq-consumer][my-consumer]
-- [ ] Upload album cover feature.
+- [x] Upload album cover feature.
 - [ ] Like and Unlike albums feature.
 - [ ] Server-Side cache.
 - [x] Keep features from API.v2.

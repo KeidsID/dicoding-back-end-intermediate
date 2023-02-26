@@ -67,13 +67,9 @@ Link to MQ Consumer: [dicoding-back-end-intermediate-mq-consumer][my-consumer]
 If you do TRUNCATE tables, make sure to re-add default album data (id: album-unknown) into "**albums**" table.
 
 ```sql
-INSERT INTO albums(id, name, year)
+INSERT INTO albums
 VALUES('album-unknown', 'Unknown', 1945)
 ```
-
-OR
-
-Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.js**".
 
 # TO DO API.v1
 
@@ -120,7 +116,7 @@ Re-migrations from "**./migrations/1676095171675_add-constraint-on-songs-table.j
 - [x] Export playlist feature. MQ Consumer: [dicoding-back-end-intermediate-mq-consumer][my-consumer]
 - [x] Upload album cover feature.
 - [x] Like and Unlike albums feature.
-- [ ] Server-Side cache.
+- [x] Server-Side cache.
 - [x] Keep features from API.v2.
 
 ## Optional Tasks

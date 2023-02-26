@@ -5,6 +5,7 @@ const configs = require('../../../common/utils/configs');
 const Hapi = require('@hapi/hapi');
 const AlbumLikesService = require('../../services/db/AlbumLikesService');
 const AlbumsService = require('../../services/db/AlbumsService');
+const CacheService = require('../../services/cache/CacheService');
 const StorageService = require('../../services/storage/StorageService');
 const Validator = require('../../validators/albums');
 
@@ -15,6 +16,7 @@ class AlbumsHandler {
   #albumsService;
   #storageService;
   #albumLikesService;
+  #cacheService;
   #validator;
 
   /**
@@ -22,17 +24,21 @@ class AlbumsHandler {
    * @param {AlbumsService} utils.albumsService
    * @param {StorageService} utils.storageService
    * @param {AlbumLikesService} utils.albumLikesService
+   * @param {CacheService} utils.cacheService
    * @param {Validator} utils.validator
    */
   constructor({
     albumsService, storageService, albumLikesService,
-    validator,
+    cacheService, validator,
   }) {
     this.#albumsService = albumsService;
     this.#storageService = storageService;
     this.#albumLikesService = albumLikesService;
+    this.#cacheService = cacheService;
     this.#validator = validator;
   }
+
+  #albumLikesCacheKey = 'album-likes:';
 
   /**
    * Handler for `POST /albums` request.
@@ -172,6 +178,8 @@ class AlbumsHandler {
       await this.#albumLikesService.likeAnAlbum(id, authId);
     }
 
+    await this.#cacheService.del(`${this.#albumLikesCacheKey}${id}`);
+
     const response = h.response({
       status: 'success',
       message: `Album ${isAlbumLiked ? 'disliked' : 'liked'}`,
@@ -193,7 +201,23 @@ class AlbumsHandler {
   async getAlbumLikes(req, h) {
     const {id} = req.params;
 
+    const cache = await this.#cacheService
+        .get(`${this.#albumLikesCacheKey}${id}`);
+
+    if (cache !== null) {
+      const response = h.response({
+        status: 'success',
+        data: {likes: +cache},
+      });
+      response.header('X-Data-Source', 'cache');
+
+      return response;
+    }
+
     const likes = await this.#albumLikesService.albumLikesCount(id);
+
+    await this.#cacheService
+        .set(`${this.#albumLikesCacheKey}${id}`, likes, 1800);
 
     return {
       status: 'success',

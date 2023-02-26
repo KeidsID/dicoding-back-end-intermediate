@@ -11,7 +11,7 @@ const Validator = require('../../validators/albums');
  */
 module.exports = {
   name: 'albums',
-  version: '1.2.0',
+  version: '1.3.0',
   /**
    * @param {Hapi.Server} server
    *
@@ -19,6 +19,7 @@ module.exports = {
    * @param {AlbumsService} options.albumsService
    * @param {StorageService} options.storageService
    * @param {AlbumLikesService} options.albumLikesService
+   * @param {CacheService} options.cacheService
    * @param {Validator} options.validator
    */
   register: async (server, options) => {

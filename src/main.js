@@ -3,6 +3,8 @@ require('dotenv').config();
 const path = require('path');
 
 const configuredServer = require('./server/config/configuredServer');
+const StorageService = require('./server/services/storage/StorageService');
+const CacheService = require('./server/services/cache/CacheService');
 
 // "albums" endpoint envs
 const albumsPlugin = require('./server/api/albums');
@@ -47,9 +49,9 @@ const exportsPlugin = require('./server/api/exports');
 const producerService = require('./server/services/mq/ProducerService');
 const ExportsValidator = require('./server/validators/exports');
 
-const StorageService = require('./server/services/storage/StorageService');
-
 const main = async () => {
+  const cacheService = new CacheService();
+
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const collaborationsService = new CollaborationsService(usersService);
@@ -98,6 +100,7 @@ const main = async () => {
         albumsService,
         storageService: albumStorageService,
         albumLikesService,
+        cacheService,
         validator: AlbumsValidator,
       },
     },

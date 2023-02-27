@@ -16,7 +16,7 @@ module.exports = {
    * @param {Hapi.Server} server - Hapi.Server
    *
    * @param {object} options
-   * @param {CollaboraionsService} options.collaborationsService
+   * @param {CollaborationsService} options.collaborationsService
    * @param {PlaylistsService} options.playlistsService
    * @param {Validator} options.validator
    */

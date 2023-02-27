@@ -19,6 +19,8 @@ class PlaylistSongActivitiesService {
     this.#pool = new Pool();
   }
 
+  #idPrefix = 'playlistSongActivity-';
+
   /**
    * Record activity as Adding Song.
    *
@@ -29,7 +31,7 @@ class PlaylistSongActivitiesService {
    * @throws {InvariantError}
    */
   async recordAddSong(playlistId, userId, songId) {
-    const id = `psActivity-${nanoid(16)}`;
+    const id = `${this.#idPrefix}${nanoid(16)}`;
 
     const query = {
       text: `INSERT INTO ${DbTables.playlistSongActivities} VALUES(
@@ -54,7 +56,7 @@ class PlaylistSongActivitiesService {
    * @throws {InvariantError}
    */
   async recordDeleteSong(playlistId, userId, songId) {
-    const id = `playlistSongActivity-${nanoid(16)}`;
+    const id = `${this.#idPrefix}${nanoid(16)}`;
 
     const query = {
       text: `INSERT INTO ${DbTables.playlistSongActivities} VALUES(

@@ -86,7 +86,6 @@ class AlbumsHandler {
    * Handler for `PUT /albums/{id}` request.
    *
    * @param {Hapi.Request} req
-   * @param {Hapi.ResponseToolkit} h
    *
    * @throws {NotFoundError}
    * @return {Promise<Hapi.ResponseObject>}

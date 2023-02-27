@@ -75,32 +75,6 @@ class AlbumLikesService {
   }
 
   /**
-   * Remove like status on album.
-   *
-   * Make sure to verify the like status before disliking.
-   *
-   * @param {string} albumId
-   * @param {string} userId
-   *
-   * @throws {InvariantError}
-   */
-  async dislikeAnAlbum(albumId, userId) {
-    const query = {
-      text: `
-        DELETE FROM ${DbTables.albumLikes} 
-        WHERE album_id = $1 AND user_id = $2
-        RETURNING id
-      `,
-      values: [albumId, userId],
-    };
-    const {rowCount} = await this.#pool.query(query);
-
-    if (!rowCount) {
-      throw new InvariantError('Fail to dislike an album');
-    }
-  }
-
-  /**
    * Check like status on album.
    *
    * Return true if liked, false otherwise.
